@@ -3,10 +3,10 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 
-// Import the Spline viewer as a web component
+// Import and define the Spline web component (client-only)
 const SplineViewer = dynamic(
   () =>
-    import('@splinetool/runtime').then(() => {
+    import('@splinetool/viewer').then(() => {
       return {
         default: () => (
           <spline-viewer
