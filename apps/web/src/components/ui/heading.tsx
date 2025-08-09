@@ -1,5 +1,5 @@
 import React from 'react';
-import Balancer from 'react-wrap-balancer';
+import { Balancer } from 'react-wrap-balancer';
 import { cn } from '@/lib/utils';
 
 type HeadingProps = {
