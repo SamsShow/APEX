@@ -12,8 +12,8 @@ const config: Config = {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         primary: {
-          DEFAULT: '#f97316',
-          foreground: '#0b0b0b',
+          DEFAULT: '#e5e7eb', // silver
+          foreground: '#09090b',
         },
         muted: {
           DEFAULT: '#1a1a1a',
@@ -35,7 +35,7 @@ const config: Config = {
         xl: '1.25rem',
       },
       boxShadow: {
-        glow: '0 0 0 1px rgba(249,115,22,.3), 0 20px 80px rgba(249,115,22,.15)',
+        glow: '0 0 0 1px rgba(229,231,235,.25), 0 20px 80px rgba(229,231,235,.12)',
       },
     },
   },

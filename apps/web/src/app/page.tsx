@@ -5,6 +5,8 @@ import { LogosMarquee } from '@/components/sections/LogosMarquee';
 import { Stats } from '@/components/sections/Stats';
 import { CTA } from '@/components/sections/CTA';
 import { Footer } from '@/components/sections/Footer';
+import { HowItWorks } from '@/components/sections/HowItWorks';
+import { Architecture } from '@/components/sections/Architecture';
 
 export default function Home() {
   return (
@@ -13,6 +15,8 @@ export default function Home() {
       <main>
         <Hero />
         <BentoGrid />
+        <HowItWorks />
+        <Architecture />
         <LogosMarquee />
         <Stats />
         <CTA />
