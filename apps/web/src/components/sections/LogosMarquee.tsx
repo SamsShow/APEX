@@ -3,21 +3,36 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const logos = ['VISA', 'Mastercard', 'PayPal', 'Stripe', 'Wise', 'Plaid'];
+// Use ecosystem-oriented labels instead of web2 payments brands
+const ecosystem = [
+  'Aptos',
+  'Pontem',
+  'Thala',
+  'Econia',
+  'Hippo',
+  'Pyth',
+  'Wormhole',
+  'LayerZero',
+  'Tortuga',
+  'OKX Web3',
+];
 
 export function LogosMarquee() {
   return (
-    <section aria-label="Trusted by" className="py-10">
+    <section aria-label="Aptos ecosystem" className="py-10">
       <div className="container">
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-black/30 p-6 backdrop-blur">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-black/30 backdrop-blur">
           <motion.div
-            className="flex gap-10 whitespace-nowrap text-sm text-zinc-300"
+            className="flex w-max gap-6 whitespace-nowrap px-4 py-3 text-sm text-zinc-200"
             animate={{ x: ['0%', '-50%'] }}
-            transition={{ repeat: Infinity, duration: 20, ease: 'linear' }}
+            transition={{ repeat: Infinity, duration: 24, ease: 'linear' }}
           >
-            {[...logos, ...logos].map((l, i) => (
-              <div key={i} className="rounded-full border border-white/10 px-4 py-2">
-                {l}
+            {[...ecosystem, ...ecosystem].map((label, i) => (
+              <div
+                key={i}
+                className="rounded-full border border-white/10 bg-black/40 px-4 py-2 backdrop-blur-sm shadow-sm"
+              >
+                {label}
               </div>
             ))}
           </motion.div>

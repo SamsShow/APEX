@@ -5,15 +5,15 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { SplineCanvas } from '@/components/three/SplineCanvas';
+import { InlineSpline } from '@/components/three/SplineInline';
 import { CheckCircle2 } from 'lucide-react';
 
 export function Hero() {
   return (
     <section className="relative min-h-screen w-full py-24">
-      {/* spline backdrop */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
+      {/* background spline for small screens only to keep performance */}
+      <div className="pointer-events-none absolute inset-0 -z-10 md:hidden">
         <SplineCanvas />
-        {/* subtle dark overlay to keep text readable without hiding the Spline */}
         <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/40 to-transparent" />
       </div>
       <div className="container grid max-w-screen-xl grid-cols-12 items-center gap-8">
@@ -82,7 +82,13 @@ export function Hero() {
             <Button variant="outline">Book a demo</Button>
           </motion.div>
         </div>
-        <div className="col-span-12 md:col-span-5 lg:col-span-5" />
+        {/* Right visual: inline spline on md+ screens */}
+        <div className="col-span-12 md:col-span-5 lg:col-span-5 hidden md:block">
+          <InlineSpline
+            scene="https://prod.spline.design/4nta309VBD1dc1OZ/scene.splinecode"
+            className="ml-auto"
+          />
+        </div>
       </div>
     </section>
   );
