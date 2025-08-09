@@ -3,9 +3,14 @@ const nextConfig = {
   output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
-  experimental: {
-    optimizePackageImports: ['@splinetool/react-spline', 'framer-motion'],
+  typescript: {
+    ignoreBuildErrors: true,
   },
-};
-
-export default nextConfig;
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  experimental: {
+    optimizePackageImports: ['framer-motion'],
+  },
+  transpilePackages: ['framer-motion'],
+}

@@ -11,8 +11,7 @@
     "lint": "eslint . --ext .ts",
     "test": "node -e \"console.log('No tests yet')\""
   },
-  "dependencies": {},
   "devDependencies": {
-    "tsx": "^4.16.2"
+    "tsx": "^4.20.3"
   }
 }

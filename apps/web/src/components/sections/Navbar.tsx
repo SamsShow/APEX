@@ -3,6 +3,7 @@
 import React from 'react';
 import { Logo } from '@/components/ui/logo';
 import { Button } from '@/components/ui/button';
+import { ConnectWalletButton } from '@/components/ui/ConnectWalletButton';
 import { motion } from 'framer-motion';
 
 export function Navbar() {
@@ -31,9 +32,9 @@ export function Navbar() {
         </nav>
         <div className="flex items-center gap-2">
           <Button variant="ghost" className="hidden md:inline-flex">
-            Log in
+            Docs
           </Button>
-          <Button>Get Started</Button>
+          <ConnectWalletButton />
         </div>
       </div>
     </motion.header>

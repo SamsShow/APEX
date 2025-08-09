@@ -7,6 +7,7 @@ import { CTA } from '@/components/sections/CTA';
 import { Footer } from '@/components/sections/Footer';
 import { HowItWorks } from '@/components/sections/HowItWorks';
 import { Architecture } from '@/components/sections/Architecture';
+import { Testimonials } from '@/components/sections/Testimonials';
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
         <HowItWorks />
         <Architecture />
         <LogosMarquee />
+        <Testimonials />
         <Stats />
         <CTA />
       </main>

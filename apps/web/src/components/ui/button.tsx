@@ -9,7 +9,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-black shadow-glow hover:brightness-110 active:brightness-95',
+        default:
+          'relative overflow-hidden bg-gradient-to-r from-zinc-200 via-white to-zinc-300 text-black shadow-glow hover:brightness-110 active:brightness-95 animate-shine bg-[length:200%_100%]',
         ghost: 'bg-transparent hover:bg-white/5 border border-white/10',
         outline: 'border border-white/10 bg-black/40 backdrop-blur-sm hover:bg-black/60',
       },
