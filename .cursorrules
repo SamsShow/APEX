@@ -1,0 +1,190 @@
+# Cursor Rules for Apex Monorepo
+
+## Project Structure Rules
+- Root directory must remain `/Users/samshow/Desktop/Move/Apex`
+- Maintain monorepo structure with `apps/*` and `packages/*`
+- Keep configuration files in root directory
+- Place workspace-specific configs in their respective directories
+
+## Code Organization
+1. Apps Directory (`apps/*`)
+   - Each app must have its own directory
+   - Must include `package.json`, `tsconfig.json`
+   - Source code goes in `src/` subdirectory
+   - Tests go in `__tests__/` or `src/__tests__/`
+
+2. Packages Directory (`packages/*`)
+   - Shared code and utilities only
+   - Must be importable by apps
+   - Must include `package.json`, `tsconfig.json`
+   - Must have proper exports in `src/index.ts`
+
+## File Naming Conventions
+- TypeScript files: `.ts`, `.tsx`
+- Test files: `.test.ts`, `.spec.ts`
+- Config files: `.config.ts`, `.config.js`
+- React components: PascalCase `.tsx`
+- Utilities: camelCase `.ts`
+
+## Import Rules
+- Use absolute imports from workspace root
+- Prefer named exports over default exports
+- Order imports: external → internal → types
+- No circular dependencies allowed
+
+## Code Style
+- Follow ESLint configuration
+- Follow Prettier configuration
+- Use TypeScript strict mode
+- Max line length: 100 characters
+- Indent: 2 spaces
+- No trailing whitespace
+- EOF newline required
+
+## Git Workflow
+1. Branch Naming
+   - feature/* : New features
+   - fix/* : Bug fixes
+   - chore/* : Maintenance
+   - docs/* : Documentation
+
+2. Commit Messages
+   - Follow conventional commits
+   - Present tense ("add" not "added")
+   - Start with lowercase
+   - No period at end
+
+## Development Procedures
+1. Starting New Feature
+   ```bash
+   git checkout -b feature/name
+   pnpm install
+   pnpm dev
+   ```
+
+2. Making Changes
+   - Write code in appropriate workspace
+   - Run `pnpm lint` before commit
+   - Run `pnpm test` before push
+   - Create changeset if needed: `pnpm changeset`
+
+3. Testing
+   - Write tests for new features
+   - Update existing tests when changing behavior
+   - Maintain test coverage
+
+4. Documentation
+   - Update README.md when adding features
+   - Document exported functions/components
+   - Keep CHANGELOG.md updated via changesets
+
+## Build and Deploy
+1. Local Build
+   ```bash
+   pnpm build
+   pnpm test
+   ```
+
+2. CI/CD
+   - GitHub Actions runs on PR and main
+   - Must pass lint/build/test
+   - Changesets bot manages versions
+
+## Dependencies
+1. Adding Dependencies
+   - Workspace root: `pnpm add -w package`
+   - Specific workspace: `pnpm add package --filter @apex/workspace`
+   - Dev dependencies: add `-D` flag
+
+2. Updating Dependencies
+   - Check updates: `pnpm outdated`
+   - Update all: `pnpm update`
+   - Update specific: `pnpm update package`
+
+## Error Handling
+1. Linter Errors
+   - Fix all ESLint errors before commit
+   - Use // eslint-disable sparingly
+   - Document why if disabled
+
+2. Type Errors
+   - Fix all TypeScript errors
+   - No `any` types without justification
+   - Document complex types
+
+## Performance Guidelines
+1. Code Optimization
+   - Use React.memo for expensive components
+   - Lazy load routes and large components
+   - Optimize images and assets
+
+2. Bundle Optimization
+   - Keep bundle sizes minimal
+   - Use code splitting
+   - Monitor bundle analyzer
+
+## Security Rules
+1. Code Security
+   - No secrets in code
+   - Use environment variables
+   - Validate all inputs
+
+2. Dependency Security
+   - Regular security audits
+   - Keep dependencies updated
+   - Review PR dependency changes
+
+## IDE Configuration
+1. VS Code Settings
+   - Use workspace settings
+   - Install recommended extensions
+   - Enable format on save
+
+2. Cursor-Specific
+   - Use semantic search for codebase exploration
+   - Leverage AI pair programming features
+   - Follow tool-specific guidelines
+
+## Release Process
+1. Prepare Release
+   - Update all dependencies
+   - Run full test suite
+   - Create release changeset
+
+2. Publishing
+   - Merge to main
+   - Wait for CI
+   - Run `pnpm release`
+
+## Maintenance
+1. Regular Tasks
+   - Dependency updates
+   - Security audits
+   - Performance monitoring
+
+2. Code Health
+   - Remove unused code
+   - Refactor complex sections
+   - Maintain documentation
+
+## Troubleshooting
+1. Common Issues
+   - Clear node_modules: `pnpm clean`
+   - Rebuild: `pnpm rebuild`
+   - Reset cache: `pnpm store prune`
+
+2. Getting Help
+   - Check documentation first
+   - Search existing issues
+   - Create detailed bug reports
+
+## Review Process
+1. Code Review
+   - Review all changes
+   - Follow PR template
+   - Address all comments
+
+2. Testing Review
+   - Verify test coverage
+   - Check edge cases
+   - Validate performance impact

@@ -1,0 +1,1 @@
+export const exampleSharedValue = 'shared';
