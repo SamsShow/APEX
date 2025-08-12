@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useMounted } from '@/components/hooks/useMounted';
 
 type Row = { symbol: string; last: number; changePct: number; points: number[] };
 
@@ -20,6 +21,7 @@ function Sparkline({ points }: { points: number[] }) {
 }
 
 export function Watchlist() {
+  const mounted = useMounted();
   const rows: Row[] = React.useMemo(
     () => [
       {
@@ -52,6 +54,7 @@ export function Watchlist() {
     ],
     [],
   );
+  if (!mounted) return <div className="h-40 rounded-xl border border-white/10 bg-black/30" />;
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 p-3 backdrop-blur">
       <div className="mb-2 text-sm font-semibold text-zinc-200">Watchlist</div>

@@ -1,14 +1,17 @@
 'use client';
 
 import React from 'react';
+import { useMounted } from '@/components/hooks/useMounted';
 
 export function HeatmapBook() {
+  const mounted = useMounted();
   const rows = Array.from({ length: 20 }).map((_, i) => ({
     price: 10 + i * 0.02,
     bid: Math.floor(Math.random() * 200),
     ask: Math.floor(Math.random() * 200),
   }));
   const max = rows.reduce((m, r) => Math.max(m, r.bid, r.ask), 0) || 1;
+  if (!mounted) return <div className="h-48 rounded-lg border border-white/10 bg-black/30" />;
   return (
     <div className="overflow-hidden rounded-lg border border-white/10 bg-black/30">
       <div className="grid grid-cols-3 border-b border-white/10 text-xs text-zinc-400">

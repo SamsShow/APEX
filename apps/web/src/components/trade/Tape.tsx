@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useMounted } from '@/components/hooks/useMounted';
 
 type Trade = { id: string; side: 'Buy' | 'Sell'; price: number; size: number; time: string };
 
@@ -31,6 +32,8 @@ export function Tape() {
     return () => clearInterval(t);
   }, []);
 
+  const mounted = useMounted();
+  if (!mounted) return <div className="h-48 rounded-lg border border-white/10 bg-black/30" />;
   return (
     <div className="h-48 overflow-auto rounded-lg border border-white/10 bg-black/30">
       <div className="grid grid-cols-4 border-b border-white/10 text-xs text-zinc-400">
