@@ -1,16 +1,9 @@
 import { AptPriceTicker } from '@/components/markets/AptPriceTicker';
 import { TOP_MOVERS, MARKET_FEED } from '@/mocks/markets';
-import { Candles } from '@/components/charts/Candles';
+import { AptCandles } from '@/components/charts/AptCandles';
+import { Watchlist } from '@/components/markets/Watchlist';
 
 export default function MarketsPage() {
-  const candles = Array.from({ length: 200 }).map((_, i) => {
-    const base = 10 + Math.sin(i / 10) * 1.4 + Math.random() * 0.4;
-    const open = base + (Math.random() - 0.5) * 0.3;
-    const close = base + (Math.random() - 0.5) * 0.3;
-    const high = Math.max(open, close) + Math.random() * 0.4;
-    const low = Math.min(open, close) - Math.random() * 0.4;
-    return { time: i, open, high, low, close };
-  });
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       <section className="rounded-xl border border-white/10 bg-card/60 p-5 shadow-glow xl:col-span-2">
@@ -20,7 +13,7 @@ export default function MarketsPage() {
         </div>
         <div className="mt-6">
           <h3 className="mb-2 text-sm font-semibold text-zinc-200">APT Candles</h3>
-          <Candles data={candles} />
+          <AptCandles />
         </div>
       </section>
       <section className="rounded-xl border border-white/10 bg-card/60 p-5 shadow-glow">
@@ -35,6 +28,9 @@ export default function MarketsPage() {
               </span>
             </div>
           ))}
+        </div>
+        <div className="mt-6">
+          <Watchlist />
         </div>
       </section>
       <section className="rounded-xl border border-white/10 bg-card/60 p-5 shadow-glow xl:col-span-3">

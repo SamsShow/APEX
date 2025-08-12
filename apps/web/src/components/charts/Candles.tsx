@@ -35,9 +35,23 @@ export function Candles({ data }: { data: Candle[] }) {
         rightPriceScale: { borderVisible: false },
         timeScale: { borderVisible: false },
         crosshair: { mode: 1 },
-      }) as unknown as ChartCandlesApi;
-      const series = chart.addCandlestickSeries({});
-      series.setData(data);
+      }) as unknown as ChartCandlesApi & {
+        addAreaSeries?: (opts?: Record<string, unknown>) => {
+          setData: (d: { time: number; value: number }[]) => void;
+        };
+      };
+      const chartLike = chart;
+      if (typeof chartLike.addCandlestickSeries === 'function') {
+        const series = chartLike.addCandlestickSeries({});
+        series.setData(data);
+      } else if (typeof chartLike.addAreaSeries === 'function') {
+        const series = chartLike.addAreaSeries({
+          lineColor: '#a1a1aa',
+          topColor: 'rgba(161,161,170,0.15)',
+          bottomColor: 'transparent',
+        });
+        series.setData(data.map((d) => ({ time: d.time, value: d.close })));
+      }
       chartRef.current = chart;
     })();
     return () => {

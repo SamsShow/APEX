@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { StrategyPayoff } from '@/components/trade/StrategyPayoff';
 
 type Leg = {
   id: string;
@@ -151,6 +152,9 @@ export function StrategyBuilder() {
             </div>
           ))
         )}
+      </div>
+      <div className="rounded-md border border-white/10 p-3">
+        <StrategyPayoff legs={legs} />
       </div>
       <div className="flex items-center justify-end gap-2">
         <Button size="sm" variant="outline" onClick={reset}>
