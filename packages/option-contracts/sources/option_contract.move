@@ -1,6 +1,7 @@
 module Apex::option_contract {
     use std::signer;
     use std::vector;
+    use aptos_framework::timestamp;
 
     /// Error codes
     const EALREADY_INITIALIZED: u64 = 1;
@@ -131,8 +132,8 @@ module Apex::option_contract {
         intrinsic * quantity
     }
 
-    /// Exercise an active option by id. For MVP, caller supplies current_time and settlement_price.
-    public entry fun exercise_option(account: &signer, id: u64, current_time_seconds: u64, settlement_price: u64) acquires Options {
+    /// Exercise an active option by id. If `use_onchain_time` == 1, uses on-chain time; otherwise uses `current_time_seconds` provided by caller (for testing/MVP).
+    public entry fun exercise_option(account: &signer, id: u64, settlement_price: u64, use_onchain_time: u8, current_time_seconds: u64) acquires Options {
         let addr = signer::address_of(account);
         assert!(exists<Options>(addr), ENOT_FOUND);
         let options = borrow_global_mut<Options>(addr);
@@ -140,7 +141,8 @@ module Apex::option_contract {
         assert!(found, ENOT_FOUND);
         let opt_ref = vector::borrow_mut<OptionContract>(&mut options.items, idx);
         assert!(opt_ref.status == STATUS_ACTIVE, EALREADY_TERMINATED);
-        assert!(current_time_seconds <= opt_ref.expiry_seconds, EEXPIRED);
+        let now = if (use_onchain_time == 1) timestamp::now_seconds() else current_time_seconds;
+        assert!(now <= opt_ref.expiry_seconds, EEXPIRED);
         let payout = compute_payout(opt_ref.strike_price, opt_ref.option_type, opt_ref.quantity, settlement_price);
         opt_ref.settlement_price = settlement_price;
         opt_ref.payout_amount = payout;
@@ -219,7 +221,7 @@ module Apex::option_contract {
 
         // cancel first (id 0), exercise second (id 1)
         cancel_option(account, 0);
-        exercise_option(account, 1, 1500, 210);
+        exercise_option(account, 1, 210, /*use_onchain_time*/ 0, /*current_time_seconds*/ 1500);
 
         let o1 = copy_last_option(@0x12); // last created has id 1
         assert!(o1.id == 1, 401);
@@ -254,7 +256,7 @@ module Apex::option_contract {
     #[expected_failure(abort_code = EALREADY_TERMINATED)]
     fun test_cancel_after_exercise_fails(account: &signer) acquires Options {
         create_option(account, 10, 10, OPTION_TYPE_CALL, 1);
-        exercise_option(account, 0, 10, 15);
+        exercise_option(account, 0, 15, 0, 10);
         cancel_option(account, 0);
     }
 
@@ -263,21 +265,21 @@ module Apex::option_contract {
     fun test_exercise_after_expiry_fails(account: &signer) acquires Options {
         create_option(account, 100, 1000, OPTION_TYPE_CALL, 1);
         // current_time > expiry => abort EEXPIRED
-        exercise_option(account, 0, 1001, 150);
+        exercise_option(account, 0, 150, 0, 1001);
     }
 
     #[test(account = @0x17)]
     fun test_exercise_payouts(account: &signer) acquires Options {
         // Call ITM
         create_option(account, 100, 1000, OPTION_TYPE_CALL, 3);
-        exercise_option(account, 0, 900, 150);
+        exercise_option(account, 0, 150, 0, 900);
         let call = copy_last_option(@0x17);
         // (150-100)*3 = 150
         assert!(call.payout_amount == 150, 500);
 
         // Put ITM
         create_option(account, 200, 1000, OPTION_TYPE_PUT, 2);
-        exercise_option(account, 1, 900, 150);
+        exercise_option(account, 1, 150, 0, 900);
         let put = copy_last_option(@0x17);
         // (200-150)*2 = 100
         assert!(put.payout_amount == 100, 501);
