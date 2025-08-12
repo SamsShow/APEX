@@ -14,6 +14,12 @@ export default function TestPage() {
   const [optionType, setOptionType] = useState<string>('0'); // 0 = Call, 1 = Put
   const [quantity, setQuantity] = useState<string>('1');
   const [optionId, setOptionId] = useState<string>('0');
+  // series creation
+  const [seriesStrike, setSeriesStrike] = useState<string>('100');
+  const [seriesExpiry, setSeriesExpiry] = useState<string>(
+    `${Math.floor(Date.now() / 1000) + 7200}`,
+  );
+  const [seriesType, setSeriesType] = useState<string>('0');
   // current time now sourced on-chain in contract
   const [settlementPrice, setSettlementPrice] = useState<string>('150');
   const [status, setStatus] = useState<string>('');
@@ -98,6 +104,16 @@ export default function TestPage() {
     return String(e);
   };
 
+  const viewCall = async <T,>(
+    func: `${string}::${string}::${string}`,
+    args: (string | number | boolean)[],
+  ): Promise<T> => {
+    const res = (await aptos.view({
+      payload: { function: func, functionArguments: args },
+    })) as unknown as T;
+    return res;
+  };
+
   const fn = (name: string) => {
     const addr = (moduleAddress || '').trim();
     if (!addr) throw new Error('Enter the published module address (e.g., 0x... of Apex)');
@@ -121,6 +137,41 @@ export default function TestPage() {
       const res = await signAndSubmitTransaction(payload);
       await waitTx(res.hash);
     } catch (e: unknown) {
+      setStatus(`Error: ${getErrorMessage(e)}`);
+    }
+  };
+
+  const onCreateSeries = async () => {
+    if (!connected || !account) return;
+    try {
+      setStatus('Submitting create_series ...');
+      const payload = {
+        sender: account.address,
+        data: {
+          function: fn('create_series'),
+          typeArguments: [],
+          functionArguments: [Number(seriesStrike), Number(seriesExpiry), Number(seriesType)],
+        },
+      } satisfies Parameters<typeof signAndSubmitTransaction>[0];
+      const res = await signAndSubmitTransaction(payload);
+      await waitTx(res.hash);
+    } catch (e: unknown) {
+      setStatus(`Error: ${getErrorMessage(e)}`);
+    }
+  };
+
+  const onGetSeriesCount = async () => {
+    try {
+      const addr = (moduleAddress || '').trim();
+      if (!addr) throw new Error('Enter module address');
+      const out = (
+        await viewCall<[string | number]>(
+          `${addr}::option_contract::get_series_count` as `${string}::${string}::${string}`,
+          [addr],
+        )
+      )[0];
+      setStatus(`Series count: ${String(out)}`);
+    } catch (e) {
       setStatus(`Error: ${getErrorMessage(e)}`);
     }
   };
@@ -166,39 +217,64 @@ export default function TestPage() {
   const onExercise = async () => {
     if (!connected || !account) return;
     try {
-      setStatus('Submitting exercise_option ...');
-      const func = fn('exercise_option');
+      setStatus('Submitting exercise ...');
+      const canonical = fn('exercise');
+      const legacy = fn('exercise_option');
       const idNum = Number(optionId);
       const priceNum = Number(settlementPrice);
 
-      // Detect ABI param count; still keep runtime fallbacks
+      // Try canonical first
+      try {
+        const payload = {
+          sender: account.address,
+          data: { function: canonical, typeArguments: [], functionArguments: [idNum, priceNum] },
+        } satisfies Parameters<typeof signAndSubmitTransaction>[0];
+        const res = await signAndSubmitTransaction(payload);
+        await waitTx(res.hash);
+        return;
+      } catch (e) {
+        // Fallback to legacy permutations
+        const msg = getErrorMessage(e);
+        setStatus(`Canonical exercise failed: ${msg}; falling back`);
+      }
+
       const count = await getExerciseParamCount();
       setStatus(`exercise_option: detected params=${String(count ?? 'unknown')} (will try 3→2→4)`);
       const nowSecs = Math.floor(Date.now() / 1000);
-      const tryOrder: Array<number[]> = [
+      const orders: Array<number[]> = [
         [idNum, nowSecs, priceNum],
         [idNum, priceNum],
         [idNum, priceNum, 1, 0],
       ];
-
-      let lastErr: unknown = null;
-      for (const args of tryOrder) {
+      for (const args of orders) {
         try {
-          setStatus(`Trying with ${args.length} args: ${JSON.stringify(args)}`);
-          const payload = {
+          const res = await signAndSubmitTransaction({
             sender: account.address,
-            data: { function: func, typeArguments: [], functionArguments: args },
-          } satisfies Parameters<typeof signAndSubmitTransaction>[0];
-          const res = await signAndSubmitTransaction(payload);
+            data: { function: legacy, typeArguments: [], functionArguments: args },
+          });
           await waitTx(res.hash);
           return;
         } catch (e) {
-          lastErr = e;
-          setStatus(`Attempt with ${args.length} args failed: ${getErrorMessage(e)}`);
+          setStatus(`Legacy attempt ${JSON.stringify(args)} failed: ${getErrorMessage(e)}`);
         }
       }
-      throw lastErr ?? new Error('exercise_option failed for all signatures');
+      throw new Error('exercise failed for all signatures');
     } catch (e: unknown) {
+      setStatus(`Error: ${getErrorMessage(e)}`);
+    }
+  };
+
+  const onLoadPortfolioLegs = async () => {
+    try {
+      if (!account) return;
+      const addr = (moduleAddress || '').trim();
+      if (!addr) throw new Error('Enter module address');
+      const legs = (await viewCall<unknown[]>(
+        `${addr}::option_contract::get_portfolio_legs` as `${string}::${string}::${string}`,
+        [String(account.address)],
+      )) as unknown as (string | number)[];
+      setStatus(`Portfolio legs: ${JSON.stringify(legs)}`);
+    } catch (e) {
       setStatus(`Error: ${getErrorMessage(e)}`);
     }
   };
@@ -307,6 +383,47 @@ export default function TestPage() {
         </Button>
       </div>
 
+      {/* Series creation */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="col-span-2 font-medium opacity-80">Series</div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Series Strike (u64)</label>
+          <input
+            value={seriesStrike}
+            onChange={(e) => setSeriesStrike(e.target.value)}
+            className="w-full rounded-md border border-gray-300 bg-white/5 p-2"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Series Expiry (u64)</label>
+          <input
+            value={seriesExpiry}
+            onChange={(e) => setSeriesExpiry(e.target.value)}
+            className="w-full rounded-md border border-gray-300 bg-white/5 p-2"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Series Type</label>
+          <select
+            value={seriesType}
+            onChange={(e) => setSeriesType(e.target.value)}
+            className="w-full rounded-md border border-gray-300 bg-white/5 p-2"
+          >
+            <option value="0">Call (0)</option>
+            <option value="1">Put (1)</option>
+          </select>
+        </div>
+        <div className="flex items-end gap-3">
+          <Button onClick={onCreateSeries} disabled={!connected}>
+            Create Series
+          </Button>
+          <Button onClick={onGetSeriesCount} variant="outline" disabled={!connected}>
+            Get Series Count
+          </Button>
+        </div>
+      </div>
+
+      {/* Option creation */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <label className="block text-sm font-medium">Strike Price (u64)</label>
@@ -380,6 +497,9 @@ export default function TestPage() {
         </Button>
         <Button onClick={onExercise} variant="outline" disabled={!connected}>
           Exercise Option
+        </Button>
+        <Button onClick={onLoadPortfolioLegs} variant="outline" disabled={!connected}>
+          Load Portfolio Legs
         </Button>
       </div>
 
