@@ -8,14 +8,7 @@ export type DepthPoint = { x: number; y: number };
 
 export function Depth({ bids, asks }: { bids: DepthPoint[]; asks: DepthPoint[] }) {
   const { ref, size } = useResizeObserver<HTMLDivElement>();
-  type ChartDepthApi = {
-    addAreaSeries: (opts?: Record<string, unknown>) => {
-      setData: (d: { time: number; value: number }[]) => void;
-    };
-    remove: () => void;
-    resize: (w: number, h: number) => void;
-  };
-  const chartRef = React.useRef<ChartDepthApi | null>(null);
+  const chartRef = React.useRef<any>(null);
 
   React.useEffect(() => {
     if (!ref.current) return;
@@ -36,7 +29,7 @@ export function Depth({ bids, asks }: { bids: DepthPoint[]; asks: DepthPoint[] }
         },
         rightPriceScale: { borderVisible: false },
         timeScale: { visible: false, borderVisible: false },
-      }) as unknown as ChartDepthApi;
+      });
       const bidsSeries = chart.addAreaSeries({
         lineColor: '#22c55e',
         topColor: 'rgba(34,197,94,0.25)',

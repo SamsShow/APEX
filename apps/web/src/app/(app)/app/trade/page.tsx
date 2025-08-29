@@ -1,3 +1,5 @@
+'use client';
+
 import { StrategyBuilder } from '@/components/trade/StrategyBuilder';
 import { OrderTicket } from '@/components/trade/OrderTicket';
 import { OrderBook } from '@/components/trade/OrderBook';
@@ -5,8 +7,12 @@ import { AptCandles } from '@/components/charts/AptCandles';
 import { Depth } from '@/components/charts/Depth';
 import { Tape } from '@/components/trade/Tape';
 import { HeatmapBook } from '@/components/trade/HeatmapBook';
+import { usePositions } from '@/hooks/usePositions';
+import { useOrders } from '@/hooks/useOrders';
 
 export default function TradePage() {
+  const { refreshPositions } = usePositions();
+  const { refreshOrders } = useOrders();
   const bids = Array.from({ length: 20 }).map((_, i) => ({ x: i, y: 100 - i * 4 }));
   const asks = Array.from({ length: 20 }).map((_, i) => ({ x: i, y: 80 - i * 3 }));
   return (
@@ -21,7 +27,7 @@ export default function TradePage() {
       </section>
       <section className="2xl:col-span-4 rounded-xl border border-white/10 bg-card/60 p-5 shadow-glow">
         <h2 className="mb-2 text-sm font-semibold text-zinc-200">Order Ticket</h2>
-        <OrderTicket />
+        <OrderTicket onPositionUpdate={refreshPositions} onOrderUpdate={refreshOrders} />
       </section>
       <section className="2xl:col-span-8 rounded-xl border border-white/10 bg-card/60 p-5 shadow-glow">
         <h2 className="mb-2 text-sm font-semibold text-zinc-200">Order Book</h2>

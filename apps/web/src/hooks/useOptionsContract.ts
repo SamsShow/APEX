@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import { OptionType, APEX_CONTRACT_CONFIG } from '@/lib/shared-types';
-// import { toast } from '@/components/ui/toast'; // Temporarily disabled
+import { useErrorHandler } from './useErrorHandler';
 
 // Import Aptos SDK for real contract interactions
 import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
@@ -14,10 +14,11 @@ const aptosConfig = new AptosConfig({
 });
 const aptosClient = new Aptos(aptosConfig);
 
-export function useOptionsContract() {
-  const { account, connected } = useWallet();
+export function useOptionsContract(onTransactionSuccess?: () => void) {
+  const { account, connected, signAndSubmitTransaction } = useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { handleTransactionError } = useErrorHandler();
 
   // Initialize user account
   const initAccount = useCallback(async (): Promise<string | null> => {
@@ -37,18 +38,23 @@ export function useOptionsContract() {
 
       console.log('Account initialized successfully');
 
+      // Call success callback to refresh data
+      if (onTransactionSuccess) {
+        onTransactionSuccess();
+      }
+
       return txHash;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to initialize account';
-      setError(errorMessage);
+      const parsedError = handleTransactionError(err, 'Account Initialization');
+      setError(parsedError.userMessage);
 
-      console.error('Account initialization failed:', errorMessage);
+      console.error('Account initialization failed:', parsedError);
 
       return null;
     } finally {
       setIsLoading(false);
     }
-  }, [connected, account]);
+  }, [connected, account, onTransactionSuccess, handleTransactionError]);
 
   // Create a new option contract
   const createOption = useCallback(
@@ -76,25 +82,29 @@ export function useOptionsContract() {
 
         console.log(`Successfully created ${quantity} ${optionType} option(s)`);
 
+        // Call success callback to refresh data
+        if (onTransactionSuccess) {
+          onTransactionSuccess();
+        }
+
         return txHash;
       } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to create option';
-        setError(errorMessage);
+        const parsedError = handleTransactionError(err, 'Option Creation');
+        setError(parsedError.userMessage);
 
-        console.error('Option creation failed:', errorMessage);
+        console.error('Option creation failed:', parsedError);
 
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [connected, account],
+    [connected, account, signAndSubmitTransaction, onTransactionSuccess, handleTransactionError],
   );
 
   // Cancel an option
   const cancelOption = useCallback(
     async (optionId: number): Promise<string | null> => {
-      // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!connected || !account?.address) {
         console.warn('Wallet not connected: Please connect your wallet first');
         return null;
@@ -104,25 +114,83 @@ export function useOptionsContract() {
       setError(null);
 
       try {
-        // TODO: Implement real wallet adapter integration
-        await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate network delay
-        const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
+        // TODO: Implement real wallet adapter integration for cancel_option
+        // const payload = {
+        //   data: {
+        //     function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::cancel_option`,
+        //     typeArguments: [],
+        //     functionArguments: [optionId],
+        //   },
+        // };
+        // const response = await signAndSubmitTransaction(payload);
 
-        console.log('Option cancelled successfully');
+        // Mock implementation for now
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        const response = {
+          hash: `0xcancel_${optionId}_${Math.random().toString(16).substring(2, 10)}...`,
+        };
+        console.log('Option cancelled successfully:', response.hash);
 
-        return txHash;
+        // Call success callback to refresh data
+        if (onTransactionSuccess) {
+          onTransactionSuccess();
+        }
+
+        return response.hash;
       } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to cancel option';
-        setError(errorMessage);
+        const parsedError = handleTransactionError(err, 'Option Cancellation');
+        setError(parsedError.userMessage);
 
-        console.error('Option cancellation failed:', errorMessage);
+        console.error('Option cancellation failed:', parsedError);
 
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [connected, account],
+    [connected, account, signAndSubmitTransaction, onTransactionSuccess, handleTransactionError],
+  );
+
+  // Cancel an order (different from canceling an option - this cancels pending orders)
+  const cancelOrder = useCallback(
+    async (_orderId: string): Promise<string | null> => {
+      if (!connected || !account?.address) {
+        console.warn('Wallet not connected: Please connect your wallet first');
+        return null;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        // For now, this is a placeholder - in a real implementation,
+        // you might need to call a specific contract function or
+        // handle order cancellation through a matching engine
+
+        // TODO: Implement real order cancellation logic
+        await new Promise((resolve) => setTimeout(resolve, 600)); // Simulate network delay
+        const txHash = `0xcancel_${_orderId}_${Math.random().toString(16).substring(2, 10)}...`;
+
+        console.log('Order cancelled successfully:', txHash);
+
+        // Call success callback to refresh data
+        if (onTransactionSuccess) {
+          onTransactionSuccess();
+        }
+
+        return txHash;
+      } catch (err: unknown) {
+        const parsedError = handleTransactionError(err, 'Order Cancellation');
+        setError(parsedError.userMessage);
+
+        console.error('Order cancellation failed:', parsedError);
+
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [connected, account, signAndSubmitTransaction, onTransactionSuccess, handleTransactionError],
   );
 
   // Exercise an option
@@ -144,21 +212,26 @@ export function useOptionsContract() {
         await new Promise((resolve) => setTimeout(resolve, 1200)); // Simulate network delay
         const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
 
-        console.log('Option exercised: Successfully exercised the option');
+        console.log('Option exercised successfully');
+
+        // Call success callback to refresh data
+        if (onTransactionSuccess) {
+          onTransactionSuccess();
+        }
 
         return txHash;
       } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to exercise option';
-        setError(errorMessage);
+        const parsedError = handleTransactionError(err, 'Option Exercise');
+        setError(parsedError.userMessage);
 
-        console.error('Exercise failed:', errorMessage);
+        console.error('Exercise failed:', parsedError);
 
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [connected, account],
+    [connected, account, signAndSubmitTransaction, onTransactionSuccess, handleTransactionError],
   );
 
   // Create an option series
@@ -184,21 +257,26 @@ export function useOptionsContract() {
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
         const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
 
-        console.log('Series created: Successfully created option series');
+        console.log('Series created successfully');
+
+        // Call success callback to refresh data
+        if (onTransactionSuccess) {
+          onTransactionSuccess();
+        }
 
         return txHash;
       } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to create series';
-        setError(errorMessage);
+        const parsedError = handleTransactionError(err, 'Series Creation');
+        setError(parsedError.userMessage);
 
-        console.error('Series creation failed:', errorMessage);
+        console.error('Series creation failed:', parsedError);
 
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [connected, account],
+    [connected, account, signAndSubmitTransaction, onTransactionSuccess, handleTransactionError],
   );
 
   // Read-only functions (don't require signing)
@@ -276,6 +354,7 @@ export function useOptionsContract() {
     initAccount,
     createOption,
     cancelOption,
+    cancelOrder,
     exerciseOption,
     createSeries,
 

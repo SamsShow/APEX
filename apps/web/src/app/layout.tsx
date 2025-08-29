@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { WalletProvider } from '@/components/providers/WalletProvider';
+import { NotificationProvider } from '@/hooks/useNotifications';
+import { NotificationContainer } from '@/components/ui/notification-container';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -36,7 +38,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <WalletProvider>{children}</WalletProvider>
+        <WalletProvider>
+          <NotificationProvider>
+            {children}
+            <NotificationContainer />
+          </NotificationProvider>
+        </WalletProvider>
       </body>
     </html>
   );

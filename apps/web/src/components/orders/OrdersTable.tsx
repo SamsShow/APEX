@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useOrders } from '@/hooks/useOrders';
+import { CancelOrderButton } from './CancelOrderButton';
 
 export function OrdersTable() {
   const { orders, isLoading, error, refreshOrders, orderStats } = useOrders();
@@ -163,7 +164,10 @@ export function OrdersTable() {
                 </div>
               )}
               {order.status === 'pending' && (
-                <div className="text-yellow-400 text-xs animate-pulse">Processing...</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-yellow-400 text-xs animate-pulse">Processing...</div>
+                  <CancelOrderButton order={order} onOrderUpdate={refreshOrders} />
+                </div>
               )}
             </div>
           </div>

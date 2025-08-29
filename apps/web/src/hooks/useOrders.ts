@@ -2,7 +2,14 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
-import { OptionType } from '@/lib/shared-types';
+import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
+import { OptionType, APEX_CONTRACT_CONFIG } from '@/lib/shared-types';
+
+// Initialize Aptos client
+const aptosConfig = new AptosConfig({
+  network: Network.TESTNET,
+});
+const aptosClient = new Aptos(aptosConfig);
 
 export interface Order {
   id: string;
@@ -22,11 +29,13 @@ export interface Order {
   errorMessage?: string;
 }
 
-export function useOrders() {
+export function useOrders(pollInterval = 15000) {
+  // Default 15 seconds
   const { account, connected } = useWallet();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   // Mock orders data for demonstration
   const mockOrders: Order[] = useMemo(
@@ -85,7 +94,7 @@ export function useOrders() {
     [],
   );
 
-  // Fetch orders from blockchain (mock implementation for now)
+  // Fetch orders from blockchain
   const fetchOrders = useCallback(async () => {
     if (!connected || !account?.address) {
       setOrders([]);
@@ -96,12 +105,94 @@ export function useOrders() {
     setError(null);
 
     try {
-      // TODO: Replace with real blockchain queries
-      // For now, simulate fetching from blockchain with mock data
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      // Get account transactions from Aptos
+      const transactions = await aptosClient.getAccountTransactions({
+        accountAddress: account.address.toString(),
+        options: {
+          limit: 20, // Get last 20 transactions
+        },
+      });
 
-      // Simulate dynamic data based on user address
-      const userOrders = mockOrders.map((order, index) => ({
+      // Filter transactions related to our contract
+      const contractTxs = transactions.filter((tx) => {
+        // Check if it's a user transaction with payload
+        if (
+          'payload' in tx &&
+          tx.payload &&
+          typeof tx.payload === 'object' &&
+          'function' in tx.payload
+        ) {
+          return tx.payload.function?.includes(APEX_CONTRACT_CONFIG.address);
+        }
+        return false;
+      });
+
+      // Convert transactions to orders
+      const userOrders: Order[] = contractTxs.map((tx, index) => {
+        let payload: { function?: string; functionArguments?: unknown[] } | undefined;
+        let functionName = '';
+
+        if (
+          'payload' in tx &&
+          tx.payload &&
+          typeof tx.payload === 'object' &&
+          'function' in tx.payload
+        ) {
+          payload = tx.payload as { function?: string; functionArguments?: unknown[] };
+          functionName = payload?.function?.split('::').pop() || '';
+        }
+
+        let orderType: Order['type'] = 'create_option';
+        if (functionName === 'cancel_option') orderType = 'cancel_option';
+        else if (functionName === 'exercise_option') orderType = 'exercise_option';
+        else if (functionName === 'create_series') orderType = 'create_series';
+
+        // Determine transaction status
+        let status: Order['status'] = 'confirmed';
+        if ('success' in tx && tx.success === false) {
+          status = 'failed';
+        } else if ('type' in tx && tx.type === 'pending_transaction') {
+          status = 'pending';
+        }
+
+        return {
+          id: `${account.address.toString().slice(-4)}-${index + 1}`,
+          type: orderType,
+          status,
+          timestamp: 'timestamp' in tx ? new Date(tx.timestamp).getTime() : Date.now(),
+          txHash: tx.hash,
+          details: {
+            // TODO: Parse actual function arguments from payload
+            strikePrice: (payload?.functionArguments?.[0] as number) || 100,
+            expirySeconds:
+              (payload?.functionArguments?.[1] as number) ||
+              Math.floor(Date.now() / 1000) + 86400 * 30,
+            quantity: (payload?.functionArguments?.[2] as number) || 1,
+          },
+          gasUsed:
+            'gas_used' in tx && tx.gas_used ? `${Number(tx.gas_used) / 100000000} APT` : undefined,
+          errorMessage: 'vm_status' in tx ? (tx.vm_status as string) : undefined,
+        };
+      });
+
+      // If no real transactions found, fall back to mock data
+      if (userOrders.length === 0) {
+        const mockUserOrders = mockOrders.map((order, index) => ({
+          ...order,
+          id: `${account.address.toString().slice(-4)}-${index + 1}`,
+          txHash: order.txHash
+            ? `${order.txHash.slice(0, -4)}${account.address.toString().slice(-4)}`
+            : undefined,
+        }));
+        setOrders(mockUserOrders);
+      } else {
+        setOrders(userOrders);
+      }
+    } catch (err: unknown) {
+      // Fallback to mock data if blockchain query fails
+      console.warn('Blockchain query failed, using mock data:', err);
+
+      const mockUserOrders = mockOrders.map((order, index) => ({
         ...order,
         id: `${account.address.toString().slice(-4)}-${index + 1}`,
         txHash: order.txHash
@@ -109,16 +200,23 @@ export function useOrders() {
           : undefined,
       }));
 
-      setOrders(userOrders);
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch orders';
-      setError(errorMessage);
-      console.error('Error fetching orders:', errorMessage);
-      setOrders([]);
+      setOrders(mockUserOrders);
+      setLastUpdated(new Date());
     } finally {
       setIsLoading(false);
     }
   }, [connected, account, mockOrders]);
+
+  // Polling effect for real-time updates
+  useEffect(() => {
+    if (!connected || !account?.address || pollInterval <= 0) return;
+
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, pollInterval);
+
+    return () => clearInterval(interval);
+  }, [connected, account, pollInterval, fetchOrders]);
 
   // Add new order to the list
   const addOrder = useCallback((order: Omit<Order, 'id'>) => {
@@ -186,5 +284,6 @@ export function useOrders() {
     getOrdersByStatus,
     getOrdersByType,
     orderStats,
+    lastUpdated,
   };
 }

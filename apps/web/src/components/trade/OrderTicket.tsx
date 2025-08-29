@@ -10,29 +10,89 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { TransactionDialog } from '@/components/ui/transaction-dialog';
 import { useOptionsContract } from '@/hooks/useOptionsContract';
-import { OptionType } from '@/lib/shared-types';
+import { useNotifications } from '@/hooks/useNotifications';
+import { OptionType, APEX_CONTRACT_CONFIG } from '@/lib/shared-types';
 
-export function OrderTicket() {
-  const { createOption, isLoading, connected } = useOptionsContract();
+interface OrderTicketProps {
+  onPositionUpdate?: () => void;
+  onOrderUpdate?: () => void;
+}
+
+export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProps = {}) {
+  const refreshData = () => {
+    if (onPositionUpdate) onPositionUpdate();
+    if (onOrderUpdate) onOrderUpdate();
+  };
+
+  const { createOption, isLoading, connected } = useOptionsContract(refreshData);
+  const { notifySuccess, notifyError } = useNotifications();
 
   const [strikePrice, setStrikePrice] = useState('');
   const [quantity, setQuantity] = useState('');
   const [optionType, setOptionType] = useState<OptionType>('call');
   const [expiryDays, setExpiryDays] = useState('30');
 
-  const handleSubmit = async () => {
+  // Transaction confirmation dialog state
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingTransaction, setPendingTransaction] = useState<{
+    strike: number;
+    qty: number;
+    type: OptionType;
+    expirySeconds: number;
+  } | null>(null);
+
+  const handleSubmit = () => {
     if (!strikePrice || !quantity) return;
 
     const strike = parseFloat(strikePrice);
     const qty = parseInt(quantity);
     const expirySeconds = Math.floor(Date.now() / 1000) + parseInt(expiryDays) * 24 * 60 * 60;
 
-    await createOption(strike, expirySeconds, optionType, qty);
+    // Show confirmation dialog
+    setPendingTransaction({
+      strike,
+      qty,
+      type: optionType,
+      expirySeconds,
+    });
+    setShowConfirmDialog(true);
+  };
 
-    // Reset form
-    setStrikePrice('');
-    setQuantity('');
+  const handleConfirmTransaction = async () => {
+    if (!pendingTransaction) return;
+
+    try {
+      const { strike, qty, type, expirySeconds } = pendingTransaction;
+      const result = await createOption(strike, expirySeconds, type, qty);
+
+      if (result) {
+        notifySuccess(
+          'Option Created Successfully!',
+          `${qty} ${type.toUpperCase()} option(s) created with strike $${strike}`,
+          5000,
+        );
+      } else {
+        notifyError('Transaction Failed', 'Failed to create option. Please try again.', 5000);
+      }
+
+      // Reset form and dialog state
+      setStrikePrice('');
+      setQuantity('');
+      setShowConfirmDialog(false);
+      setPendingTransaction(null);
+    } catch (error) {
+      console.error('Transaction error:', error);
+      notifyError('Transaction Failed', 'An unexpected error occurred. Please try again.', 5000);
+      setShowConfirmDialog(false);
+      setPendingTransaction(null);
+    }
+  };
+
+  const handleCancelTransaction = () => {
+    setShowConfirmDialog(false);
+    setPendingTransaction(null);
   };
 
   if (!connected) {
@@ -116,6 +176,31 @@ export function OrderTicket() {
           {isLoading ? 'Creating...' : 'Create Option'}
         </Button>
       </div>
+
+      {/* Transaction Confirmation Dialog */}
+      {pendingTransaction && (
+        <TransactionDialog
+          isOpen={showConfirmDialog}
+          onConfirm={handleConfirmTransaction}
+          onCancel={handleCancelTransaction}
+          isLoading={isLoading}
+          title="Confirm Option Creation"
+          description={`Create a ${pendingTransaction.type.toUpperCase()} option with strike price $${pendingTransaction.strike}`}
+          details={{
+            function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::create_option`,
+            typeArguments: [],
+            functionArguments: [
+              pendingTransaction.strike,
+              pendingTransaction.expirySeconds,
+              pendingTransaction.type === 'call' ? 0 : 1,
+              pendingTransaction.qty,
+            ],
+            estimatedGas: '0.001',
+            estimatedCost: '0.001',
+          }}
+          action="Create Option"
+        />
+      )}
     </div>
   );
 }

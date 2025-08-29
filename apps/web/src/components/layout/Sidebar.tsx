@@ -15,6 +15,11 @@ import {
   Settings,
   BarChart3,
   ListChecks,
+  History,
+  GitBranch,
+  PieChart,
+  Shield,
+  Target,
 } from 'lucide-react';
 
 type NavItem = {
@@ -27,9 +32,14 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/app', label: 'overview', icon: <LayoutGrid className="h-4 w-4" /> },
   { href: '/app/markets', label: 'markets', icon: <LineChart className="h-4 w-4" /> },
   { href: '/app/trade', label: 'trade', icon: <CandlestickChart className="h-4 w-4" /> },
+  { href: '/app/advanced-orders', label: 'advanced', icon: <Target className="h-4 w-4" /> },
+  { href: '/app/strategies', label: 'strategies', icon: <GitBranch className="h-4 w-4" /> },
   { href: '/app/positions', label: 'positions', icon: <Activity className="h-4 w-4" /> },
   { href: '/app/portfolio', label: 'portfolio', icon: <BarChart3 className="h-4 w-4" /> },
+  { href: '/app/analytics', label: 'analytics', icon: <PieChart className="h-4 w-4" /> },
+  { href: '/app/risk', label: 'risk', icon: <Shield className="h-4 w-4" /> },
   { href: '/app/orders', label: 'orders', icon: <ListChecks className="h-4 w-4" /> },
+  { href: '/app/transactions', label: 'transactions', icon: <History className="h-4 w-4" /> },
   { href: '/app/wallet', label: 'wallet', icon: <Wallet className="h-4 w-4" /> },
   { href: '/app/docs', label: 'docs', icon: <BookOpenCheck className="h-4 w-4" /> },
   { href: '/app/settings', label: 'settings', icon: <Settings className="h-4 w-4" /> },
@@ -39,12 +49,15 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky left-0 top-0 z-40 hidden h-screen w-64 shrink-0 border-r border-white/10 bg-black/40 backdrop-blur md:block">
-      <div className="flex h-16 items-center gap-3 px-5">
+    <aside className="sticky left-0 top-0 z-40 hidden h-screen w-64 shrink-0 border-r border-slate-800/50 bg-slate-900/80 backdrop-blur-lg md:block">
+      <div className="flex h-16 items-center gap-3 px-5 border-b border-slate-800/30">
         <Logo className="h-7" />
-        <span className="text-sm font-medium text-zinc-200/90">Apex</span>
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold text-white">Apex</span>
+          <span className="text-xs text-slate-400">Trading Platform</span>
+        </div>
       </div>
-      <nav className="flex flex-col gap-1 px-3 py-2">
+      <nav className="flex flex-col gap-1 px-3 py-4">
         {NAV_ITEMS.map((item) => {
           const active =
             pathname === item.href || (item.href !== '/app' && pathname?.startsWith(item.href));
@@ -53,18 +66,32 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-zinc-100',
-                active && 'bg-white/10 text-zinc-100 shadow-glow',
+                'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 text-slate-400 hover:bg-slate-800/50 hover:text-white',
+                active &&
+                  'bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-lg shadow-blue-500/10',
               )}
             >
-              <span className="text-zinc-300 group-hover:text-white">{item.icon}</span>
-              <span className="capitalize">{item.label}</span>
+              <span
+                className={cn(
+                  'transition-colors',
+                  active ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300',
+                )}
+              >
+                {item.icon}
+              </span>
+              <span className="capitalize font-medium">{item.label}</span>
             </Link>
           );
         })}
       </nav>
-      <div className="mt-auto p-3 text-xs text-zinc-500">
-        <p>testnet</p>
+      <div className="mt-auto p-4">
+        <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3">
+          <div className="flex items-center gap-2 text-xs">
+            <div className="h-2 w-2 rounded-full bg-amber-400"></div>
+            <span className="text-amber-300 font-medium">Testnet</span>
+          </div>
+          <p className="mt-1 text-xs text-amber-400/80">Experimental features active</p>
+        </div>
       </div>
     </aside>
   );
@@ -79,22 +106,25 @@ export function MobileSidebar({ open, onClose }: { open: boolean; onClose: () =>
     >
       <div
         className={cn(
-          'absolute inset-0 bg-black/60 transition-opacity',
+          'absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity',
           open ? 'opacity-100' : 'opacity-0',
         )}
         onClick={onClose}
       />
       <div
         className={cn(
-          'absolute left-0 top-0 flex h-full w-72 flex-col border-r border-white/10 bg-black/80 backdrop-blur transition-transform',
+          'absolute left-0 top-0 flex h-full w-72 flex-col border-r border-slate-800/50 bg-slate-900/95 backdrop-blur-lg transition-transform duration-300 ease-in-out',
           open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="flex h-16 items-center gap-3 px-5">
+        <div className="flex h-16 items-center gap-3 px-5 border-b border-slate-800/30">
           <Logo className="h-7" />
-          <span className="text-sm font-medium text-zinc-200/90">Apex</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-white">Apex</span>
+            <span className="text-xs text-slate-400">Trading Platform</span>
+          </div>
         </div>
-        <nav className="flex flex-1 flex-col gap-1 px-3 py-2">
+        <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
           {NAV_ITEMS.map((item) => {
             const active =
               pathname === item.href || (item.href !== '/app' && pathname?.startsWith(item.href));
@@ -104,18 +134,31 @@ export function MobileSidebar({ open, onClose }: { open: boolean; onClose: () =>
                 href={item.href}
                 onClick={onClose}
                 className={cn(
-                  'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-zinc-100',
-                  active && 'bg-white/10 text-zinc-100 shadow-glow',
+                  'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 text-slate-400 hover:bg-slate-800/50 hover:text-white',
+                  active && 'bg-blue-500/20 text-blue-300 border border-blue-500/30',
                 )}
               >
-                <span className="text-zinc-300 group-hover:text-white">{item.icon}</span>
-                <span className="capitalize">{item.label}</span>
+                <span
+                  className={cn(
+                    'transition-colors',
+                    active ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300',
+                  )}
+                >
+                  {item.icon}
+                </span>
+                <span className="capitalize font-medium">{item.label}</span>
               </Link>
             );
           })}
         </nav>
-        <div className="p-3 text-xs text-zinc-500">
-          <p>testnet</p>
+        <div className="p-4">
+          <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3">
+            <div className="flex items-center gap-2 text-xs">
+              <div className="h-2 w-2 rounded-full bg-amber-400"></div>
+              <span className="text-amber-300 font-medium">Testnet</span>
+            </div>
+            <p className="mt-1 text-xs text-amber-400/80">Experimental features active</p>
+          </div>
         </div>
       </div>
     </div>

@@ -3,49 +3,80 @@
 import { MarketsSnapshot } from '@/components/dashboard/MarketsSnapshot';
 import { usePositions } from '@/hooks/usePositions';
 import { useOrders } from '@/hooks/useOrders';
+import { usePortfolioPnL } from '@/hooks/usePortfolioPnL';
 
 export default function OverviewPage() {
-  const { portfolioSummary, isLoading: positionsLoading } = usePositions();
+  const { isLoading: positionsLoading } = usePositions();
   const { orderStats, isLoading: ordersLoading } = useOrders();
+  const { portfolioSummary: pnlSummary, isLoading: pnlLoading } = usePortfolioPnL();
 
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {/* Portfolio Summary */}
       <section className="rounded-xl border border-white/10 bg-card/60 p-5 shadow-glow">
         <h2 className="mb-4 text-sm font-semibold text-zinc-200">Portfolio Overview</h2>
-        {positionsLoading ? (
+        {positionsLoading || pnlLoading ? (
           <div className="text-center text-zinc-400 py-4">Loading...</div>
         ) : (
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-zinc-400 text-sm">Total Value</span>
               <span className="text-zinc-200 font-semibold">
-                ${portfolioSummary.totalValue.toFixed(2)}
+                ${pnlSummary.totalMarketValue.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-zinc-400 text-sm">Unrealized P&L</span>
               <span
-                className={`font-semibold ${portfolioSummary.totalUnrealizedPnL >= 0 ? 'text-green-400' : 'text-red-400'}`}
+                className={`font-semibold ${pnlSummary.totalUnrealizedPnL >= 0 ? 'text-green-400' : 'text-red-400'}`}
               >
-                {portfolioSummary.totalUnrealizedPnL >= 0 ? '+' : ''}$
-                {portfolioSummary.totalUnrealizedPnL.toFixed(2)}
+                {pnlSummary.totalUnrealizedPnL >= 0 ? '+' : ''}$
+                {pnlSummary.totalUnrealizedPnL.toFixed(2)}
+                <span className="text-xs ml-1">
+                  ({pnlSummary.totalUnrealizedPnLPercent >= 0 ? '+' : ''}
+                  {pnlSummary.totalUnrealizedPnLPercent.toFixed(2)}%)
+                </span>
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-zinc-400 text-sm">Realized P&L</span>
+              <span className="text-zinc-400 text-sm">Daily P&L</span>
               <span
-                className={`font-semibold ${portfolioSummary.totalRealizedPnL >= 0 ? 'text-green-400' : 'text-red-400'}`}
+                className={`font-semibold ${pnlSummary.dailyPnL >= 0 ? 'text-green-400' : 'text-red-400'}`}
               >
-                {portfolioSummary.totalRealizedPnL >= 0 ? '+' : ''}$
-                {portfolioSummary.totalRealizedPnL.toFixed(2)}
+                {pnlSummary.dailyPnL >= 0 ? '+' : ''}${pnlSummary.dailyPnL.toFixed(2)}
+                <span className="text-xs ml-1">
+                  ({pnlSummary.dailyPnLPercent >= 0 ? '+' : ''}
+                  {pnlSummary.dailyPnLPercent.toFixed(2)}%)
+                </span>
               </span>
             </div>
-            <div className="border-t border-white/10 pt-3">
+            <div className="flex justify-between items-center">
+              <span className="text-zinc-400 text-sm">Total P&L</span>
+              <span
+                className={`font-semibold ${pnlSummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'}`}
+              >
+                {pnlSummary.totalPnL >= 0 ? '+' : ''}${pnlSummary.totalPnL.toFixed(2)}
+                <span className="text-xs ml-1">
+                  ({pnlSummary.totalPnLPercent >= 0 ? '+' : ''}
+                  {pnlSummary.totalPnLPercent.toFixed(2)}%)
+                </span>
+              </span>
+            </div>
+            <div className="border-t border-white/10 pt-3 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-zinc-400 text-sm">Positions</span>
+                <span className="text-zinc-200 font-semibold">{pnlSummary.positionsCount}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-400 text-sm">Win Rate</span>
                 <span className="text-zinc-200 font-semibold">
-                  {portfolioSummary.positionCount}
+                  {pnlSummary.winRate.toFixed(1)}%
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-400 text-sm">Sharpe Ratio</span>
+                <span className="text-zinc-200 font-semibold">
+                  {pnlSummary.sharpeRatio.toFixed(2)}
                 </span>
               </div>
             </div>

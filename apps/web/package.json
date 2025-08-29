@@ -17,6 +17,7 @@
     "@splinetool/viewer": "^1.10.44",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",
     "lightweight-charts": "^5.0.8",
     "lucide-react": "^0.539.0",
