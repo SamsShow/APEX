@@ -15,7 +15,7 @@ const aptosConfig = new AptosConfig({
 const aptosClient = new Aptos(aptosConfig);
 
 export function useOptionsContract() {
-  const { account, connected } = useWallet(); // TODO: Add signAndSubmitTransaction back when implementing real wallet integration
+  const { account, connected } = useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,15 +30,8 @@ export function useOptionsContract() {
     setError(null);
 
     try {
-      // TODO: Use this payload for real wallet adapter integration
-      // const payload = {
-      //   function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::init_account`,
-      //   typeArguments: [],
-      //   functionArguments: [],
-      // };
-
-      // TODO: Replace with real wallet adapter integration
-      // For now, simulate successful transaction
+      // TODO: Implement real wallet adapter integration
+      // For now, simulate successful transaction with mock
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
       const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
 
@@ -77,14 +70,7 @@ export function useOptionsContract() {
         // TODO: Use this for real wallet adapter integration
         // const optionTypeValue = optionType === 'call' ? 0 : 1; // OPTION_TYPE_CALL = 0, OPTION_TYPE_PUT = 1
 
-        // TODO: Use this payload for real wallet adapter integration
-        // const payload = {
-        //   function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::create_option`,
-        //   typeArguments: [],
-        //   functionArguments: [strikePrice, expirySeconds, optionTypeValue, quantity],
-        // };
-
-        // TODO: Replace with real wallet adapter integration
+        // TODO: Implement real wallet adapter integration
         await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate network delay
         const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
 
@@ -118,15 +104,8 @@ export function useOptionsContract() {
       setError(null);
 
       try {
-        // TODO: Use this payload for real wallet adapter integration
-        // const payload = {
-        //   function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::cancel_option`,
-        //   typeArguments: [],
-        //   functionArguments: [optionId],
-        // };
-
-        // TODO: Replace with real wallet adapter integration
-        await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate network delay
+        // TODO: Implement real wallet adapter integration
+        await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate network delay
         const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
 
         console.log('Option cancelled successfully');
@@ -161,15 +140,8 @@ export function useOptionsContract() {
       setError(null);
 
       try {
-        // TODO: Use this payload for real wallet adapter integration
-        // const payload = {
-        //   function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::exercise_option`,
-        //   typeArguments: [],
-        //   functionArguments: [optionId, settlementPrice, 1, Math.floor(Date.now() / 1000)], // use_onchain_time = 1, current_time
-        // };
-
-        // TODO: Replace with real wallet adapter integration
-        await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate network delay
+        // TODO: Implement real wallet adapter integration
+        await new Promise((resolve) => setTimeout(resolve, 1200)); // Simulate network delay
         const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
 
         console.log('Option exercised: Successfully exercised the option');
@@ -208,15 +180,8 @@ export function useOptionsContract() {
         // TODO: Use this for real wallet adapter integration
         // const optionTypeValue = optionType === 'call' ? 0 : 1;
 
-        // TODO: Use this payload for real wallet adapter integration
-        // const payload = {
-        //   function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::create_series`,
-        //   typeArguments: [],
-        //   functionArguments: [strikePrice, expirySeconds, optionTypeValue],
-        // };
-
-        // TODO: Replace with real wallet adapter integration
-        await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate network delay
+        // TODO: Implement real wallet adapter integration
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
         const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
 
         console.log('Series created: Successfully created option series');
