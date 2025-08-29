@@ -4,7 +4,7 @@ version = "0.0.1"
 
 [addresses]
 # Allow override at publish time
-Apex = "0xA11CE"
+Apex = "0x9840325ffef7ffc5de961625fd9909d916eecd4fa515ddb2fdf4b38f47f5b083"
 
 [dependencies]
 MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "aptos-node-v1.10.0", subdir = "aptos-move/framework/move-stdlib" }

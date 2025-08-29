@@ -9,9 +9,9 @@ import {
   CONTRACT_ERRORS,
 } from './types';
 
-// Contract configuration
+// Contract configuration - Deployed on Aptos testnet
 export const APEX_CONTRACT_CONFIG: ContractConfig = {
-  address: '0xa11ce', // From Move.toml
+  address: '0x9840325ffef7ffc5de961625fd9909d916eecd4fa515ddb2fdf4b38f47f5b083', // Deployed contract address
   module: 'option_contract',
 };
 

@@ -83,8 +83,8 @@ export const CONTRACT_ERRORS = {
   EINVALID_SERIES: 9,
 } as const;
 
-// Contract configuration
+// Contract configuration - Updated with deployed contract address
 export const APEX_CONTRACT_CONFIG: ContractConfig = {
-  address: '0xa11ce', // From Move.toml
+  address: '0x9840325ffef7ffc5de961625fd9909d916eecd4fa515ddb2fdf4b38f47f5b083', // Deployed on testnet
   module: 'option_contract',
 };
