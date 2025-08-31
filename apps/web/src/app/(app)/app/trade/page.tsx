@@ -9,12 +9,27 @@ import { Tape } from '@/components/trade/Tape';
 import { HeatmapBook } from '@/components/trade/HeatmapBook';
 import { usePositions } from '@/hooks/usePositions';
 import { useOrders } from '@/hooks/useOrders';
+import { useOrderBookWebSocket } from '@/hooks/useWebSocket';
+import { useTradesWebSocket } from '@/hooks/useWebSocket';
 
 export default function TradePage() {
   const { refreshPositions } = usePositions();
   const { refreshOrders } = useOrders();
-  const bids = Array.from({ length: 20 }).map((_, i) => ({ x: i, y: 100 - i * 4 }));
-  const asks = Array.from({ length: 20 }).map((_, i) => ({ x: i, y: 80 - i * 3 }));
+
+  // WebSocket connections for real-time data
+  const { orderBook, isConnected: orderBookConnected } = useOrderBookWebSocket('APT/USD');
+  const { trades, isConnected: tradesConnected } = useTradesWebSocket('APT/USD');
+
+  // Convert orderbook data for Depth component
+  const bids = orderBook.bids.map(([price, quantity], index) => ({
+    x: index,
+    y: quantity,
+  }));
+
+  const asks = orderBook.asks.map(([price, quantity], index) => ({
+    x: index,
+    y: quantity,
+  }));
   return (
     <div className="grid grid-cols-1 gap-6 2xl:grid-cols-12">
       <section className="2xl:col-span-8 rounded-xl border border-white/10 bg-card/60 p-5 shadow-glow">

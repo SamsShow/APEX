@@ -48,6 +48,22 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
 
     const strike = parseFloat(strikePrice);
     const qty = parseInt(quantity);
+
+    // Validate inputs
+    if (strike <= 0) {
+      notifyError('Strike price must be greater than 0');
+      return;
+    }
+
+    if (qty <= 0) {
+      notifyError('Quantity must be greater than 0');
+      return;
+    }
+
+    if (qty > 1000) {
+      notifyError('Maximum quantity is 1000');
+      return;
+    }
     const expirySeconds = Math.floor(Date.now() / 1000) + parseInt(expiryDays) * 24 * 60 * 60;
 
     // Show confirmation dialog
@@ -97,8 +113,15 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
 
   if (!connected) {
     return (
-      <div className="flex h-[420px] flex-col gap-3 rounded-lg border border-white/10 bg-black/30 p-3">
+      <div className="flex h-[420px] flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-900/50 p-3">
         <div className="text-sm font-medium text-zinc-200">Order Ticket</div>
+
+        {/* Connection Status */}
+        <div className="flex items-center gap-2 p-2 rounded border border-red-500/20 bg-red-500/5">
+          <div className="w-2 h-2 rounded-full bg-red-400"></div>
+          <span className="text-xs text-zinc-300">Wallet Not Connected</span>
+        </div>
+
         <div className="flex-1 flex items-center justify-center text-zinc-500">
           Connect wallet to place orders
         </div>
@@ -107,15 +130,24 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
   }
 
   return (
-    <div className="flex h-[420px] flex-col gap-3 rounded-lg border border-white/10 bg-black/30 p-3">
+    <div className="flex h-[420px] flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-900/50 p-3">
       <div className="text-sm font-medium text-zinc-200">Create Option</div>
+
+      {/* Connection Status */}
+      <div className="flex items-center gap-2 p-2 rounded border border-zinc-700 bg-zinc-800/30">
+        <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-400' : 'bg-red-400'}`}></div>
+        <span className="text-xs text-zinc-300">
+          {connected ? 'Live Contract Calls' : 'Connect Wallet Required'}
+        </span>
+        {connected && <span className="text-xs text-zinc-500 ml-auto">Aptos Testnet</span>}
+      </div>
 
       <div className="flex flex-col gap-3 flex-1">
         {/* Option Type */}
         <div>
           <label className="text-xs text-zinc-400 mb-1 block">Type</label>
           <Select value={optionType} onValueChange={(value: OptionType) => setOptionType(value)}>
-            <SelectTrigger className="bg-black/50 border-white/10">
+            <SelectTrigger className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -133,7 +165,7 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
             placeholder="100"
             value={strikePrice}
             onChange={(e) => setStrikePrice(e.target.value)}
-            className="bg-black/50 border-white/10"
+            className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50"
           />
         </div>
 
@@ -145,7 +177,7 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
             placeholder="1"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
-            className="bg-black/50 border-white/10"
+            className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50"
           />
         </div>
 
@@ -153,7 +185,7 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
         <div>
           <label className="text-xs text-zinc-400 mb-1 block">Expiry (days)</label>
           <Select value={expiryDays} onValueChange={setExpiryDays}>
-            <SelectTrigger className="bg-black/50 border-white/10">
+            <SelectTrigger className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

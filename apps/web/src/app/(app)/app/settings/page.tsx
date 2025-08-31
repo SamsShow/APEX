@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { PriceFeedsDashboard } from '@/components/markets/PriceFeedsDashboard';
 
 type Settings = {
   theme: 'system' | 'light' | 'dark';
@@ -46,77 +47,82 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-card/60 p-5 shadow-glow">
-      <h2 className="mb-4 text-sm font-semibold text-zinc-200">Settings</h2>
-      <div className="grid gap-6 md:grid-cols-2">
-        <section className="space-y-3">
-          <div>
-            <div className="mb-1 text-xs font-medium text-zinc-400">Theme</div>
-            <div className="flex gap-2">
-              {(['system', 'light', 'dark'] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => update('theme', t)}
-                  className={
-                    'rounded-lg border px-3 py-1 text-sm ' +
-                    (settings.theme === t
-                      ? 'border-white/30 bg-white/10 text-zinc-100'
-                      : 'border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10')
-                  }
-                >
-                  {t}
-                </button>
-              ))}
+    <div className="space-y-6">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+        <h2 className="mb-4 text-sm font-semibold text-zinc-200">Settings</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <section className="space-y-3">
+            <div>
+              <div className="mb-1 text-xs font-medium text-zinc-400">Theme</div>
+              <div className="flex gap-2">
+                {(['system', 'light', 'dark'] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => update('theme', t)}
+                    className={
+                      'rounded-lg border px-3 py-1 text-sm ' +
+                      (settings.theme === t
+                        ? 'border-zinc-600 bg-zinc-700/50 text-zinc-100'
+                        : 'border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:bg-zinc-700/30')
+                    }
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-zinc-300">Compact mode</span>
-            <input
-              type="checkbox"
-              checked={settings.compactMode}
-              onChange={(e) => update('compactMode', e.target.checked)}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-zinc-300">Animations</span>
-            <input
-              type="checkbox"
-              checked={settings.animations}
-              onChange={(e) => update('animations', e.target.checked)}
-            />
-          </div>
-        </section>
-        <section className="space-y-3">
-          <div>
-            <div className="mb-1 text-xs font-medium text-zinc-400">Live Price Source</div>
-            <div className="flex gap-2">
-              {(['pyth', 'coingecko'] as const).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => update('priceSource', s)}
-                  className={
-                    'rounded-lg border px-3 py-1 text-sm ' +
-                    (settings.priceSource === s
-                      ? 'border-white/30 bg-white/10 text-zinc-100'
-                      : 'border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10')
-                  }
-                >
-                  {s}
-                </button>
-              ))}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-zinc-300">Compact mode</span>
+              <input
+                type="checkbox"
+                checked={settings.compactMode}
+                onChange={(e) => update('compactMode', e.target.checked)}
+              />
             </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-zinc-300">Show order book heatmap</span>
-            <input
-              type="checkbox"
-              checked={settings.showHeatmap}
-              onChange={(e) => update('showHeatmap', e.target.checked)}
-            />
-          </div>
-        </section>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-zinc-300">Animations</span>
+              <input
+                type="checkbox"
+                checked={settings.animations}
+                onChange={(e) => update('animations', e.target.checked)}
+              />
+            </div>
+          </section>
+          <section className="space-y-3">
+            <div>
+              <div className="mb-1 text-xs font-medium text-zinc-400">Live Price Source</div>
+              <div className="flex gap-2">
+                {(['pyth', 'coingecko'] as const).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => update('priceSource', s)}
+                    className={
+                      'rounded-lg border px-3 py-1 text-sm ' +
+                      (settings.priceSource === s
+                        ? 'border-zinc-600 bg-zinc-700/50 text-zinc-100'
+                        : 'border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:bg-zinc-700/30')
+                    }
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-zinc-300">Show order book heatmap</span>
+              <input
+                type="checkbox"
+                checked={settings.showHeatmap}
+                onChange={(e) => update('showHeatmap', e.target.checked)}
+              />
+            </div>
+          </section>
+        </div>
+        {!mounted && <div className="mt-6 text-xs text-zinc-500">Loading settings…</div>}
       </div>
-      {!mounted && <div className="mt-6 text-xs text-zinc-500">Loading settings…</div>}
+
+      {/* Pyth Price Feeds Dashboard */}
+      <PriceFeedsDashboard />
     </div>
   );
 }

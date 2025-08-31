@@ -249,7 +249,7 @@ export function useWebSocket(
 // Specialized hooks for different data types
 
 export function usePriceWebSocket() {
-  const ws = useWebSocket('wss://api.apextrading.com/prices', {
+  const ws = useWebSocket('ws://localhost:3001/api/ws/prices', {
     reconnectAttempts: 10,
     reconnectInterval: 2000,
   });
@@ -277,7 +277,7 @@ export function usePriceWebSocket() {
 }
 
 export function useOrderBookWebSocket(symbol?: string) {
-  const ws = useWebSocket('wss://api.apextrading.com/orderbook', {
+  const ws = useWebSocket('ws://localhost:3001/api/ws/orderbook', {
     reconnectAttempts: 10,
     reconnectInterval: 2000,
   });
@@ -322,7 +322,7 @@ export function useOrderBookWebSocket(symbol?: string) {
 }
 
 export function useTradesWebSocket(symbol?: string) {
-  const ws = useWebSocket('wss://api.apextrading.com/trades', {
+  const ws = useWebSocket('ws://localhost:3001/api/ws/trades', {
     reconnectAttempts: 10,
     reconnectInterval: 2000,
   });

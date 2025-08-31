@@ -8,7 +8,7 @@ export type DepthPoint = { x: number; y: number };
 
 export function Depth({ bids, asks }: { bids: DepthPoint[]; asks: DepthPoint[] }) {
   const { ref, size } = useResizeObserver<HTMLDivElement>();
-  const chartRef = React.useRef<any>(null);
+  const chartRef = React.useRef<{ remove: () => void } | null>(null);
 
   React.useEffect(() => {
     if (!ref.current) return;
@@ -30,15 +30,17 @@ export function Depth({ bids, asks }: { bids: DepthPoint[]; asks: DepthPoint[] }
         rightPriceScale: { borderVisible: false },
         timeScale: { visible: false, borderVisible: false },
       });
-      const bidsSeries = chart.addAreaSeries({
-        lineColor: '#22c55e',
-        topColor: 'rgba(34,197,94,0.25)',
-        bottomColor: 'transparent',
+      const bidsSeries = chart.addSeries('Line', {
+        color: '#22c55e',
+        lineWidth: 2,
+        crosshairMarkerVisible: false,
+        priceLineVisible: false,
       });
-      const asksSeries = chart.addAreaSeries({
-        lineColor: '#ef4444',
-        topColor: 'rgba(239,68,68,0.25)',
-        bottomColor: 'transparent',
+      const asksSeries = chart.addSeries('Line', {
+        color: '#ef4444',
+        lineWidth: 2,
+        crosshairMarkerVisible: false,
+        priceLineVisible: false,
       });
       bidsSeries.setData(bids.map((p) => ({ time: p.x, value: p.y })));
       asksSeries.setData(asks.map((p) => ({ time: p.x, value: p.y })));

@@ -31,19 +31,23 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
     setError(null);
 
     try {
-      // TODO: Implement real wallet adapter integration
-      // For now, simulate successful transaction with mock
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-      const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
+      const payload = {
+        data: {
+          function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::init_account`,
+          typeArguments: [],
+          functionArguments: [],
+        },
+      };
 
-      console.log('Account initialized successfully');
+      const response = await signAndSubmitTransaction(payload);
+      console.log('Account initialized successfully:', response.hash);
 
       // Call success callback to refresh data
       if (onTransactionSuccess) {
         onTransactionSuccess();
       }
 
-      return txHash;
+      return response.hash;
     } catch (err: unknown) {
       const parsedError = handleTransactionError(err, 'Account Initialization');
       setError(parsedError.userMessage);
@@ -54,7 +58,7 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
     } finally {
       setIsLoading(false);
     }
-  }, [connected, account, onTransactionSuccess, handleTransactionError]);
+  }, [connected, account, signAndSubmitTransaction, onTransactionSuccess, handleTransactionError]);
 
   // Create a new option contract
   const createOption = useCallback(
@@ -73,21 +77,25 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
       setError(null);
 
       try {
-        // TODO: Use this for real wallet adapter integration
-        // const optionTypeValue = optionType === 'call' ? 0 : 1; // OPTION_TYPE_CALL = 0, OPTION_TYPE_PUT = 1
+        const optionTypeValue = optionType === 'call' ? 0 : 1; // OPTION_TYPE_CALL = 0, OPTION_TYPE_PUT = 1
 
-        // TODO: Implement real wallet adapter integration
-        await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate network delay
-        const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
+        const payload = {
+          data: {
+            function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::create_option`,
+            typeArguments: [],
+            functionArguments: [strikePrice, expirySeconds, optionTypeValue, quantity],
+          },
+        };
 
-        console.log(`Successfully created ${quantity} ${optionType} option(s)`);
+        const response = await signAndSubmitTransaction(payload);
+        console.log(`Successfully created ${quantity} ${optionType} option(s):`, response.hash);
 
         // Call success callback to refresh data
         if (onTransactionSuccess) {
           onTransactionSuccess();
         }
 
-        return txHash;
+        return response.hash;
       } catch (err: unknown) {
         const parsedError = handleTransactionError(err, 'Option Creation');
         setError(parsedError.userMessage);
@@ -114,21 +122,15 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
       setError(null);
 
       try {
-        // TODO: Implement real wallet adapter integration for cancel_option
-        // const payload = {
-        //   data: {
-        //     function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::cancel_option`,
-        //     typeArguments: [],
-        //     functionArguments: [optionId],
-        //   },
-        // };
-        // const response = await signAndSubmitTransaction(payload);
-
-        // Mock implementation for now
-        await new Promise((resolve) => setTimeout(resolve, 600));
-        const response = {
-          hash: `0xcancel_${optionId}_${Math.random().toString(16).substring(2, 10)}...`,
+        const payload = {
+          data: {
+            function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::cancel_option`,
+            typeArguments: [],
+            functionArguments: [optionId],
+          },
         };
+
+        const response = await signAndSubmitTransaction(payload);
         console.log('Option cancelled successfully:', response.hash);
 
         // Call success callback to refresh data
@@ -195,10 +197,7 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
 
   // Exercise an option
   const exerciseOption = useCallback(
-    async (
-      optionId: number, // eslint-disable-line @typescript-eslint/no-unused-vars
-      settlementPrice: number, // eslint-disable-line @typescript-eslint/no-unused-vars
-    ): Promise<string | null> => {
+    async (optionId: number, settlementPrice: number): Promise<string | null> => {
       if (!connected || !account?.address) {
         console.warn('Wallet not connected: Please connect your wallet first');
         return null;
@@ -208,18 +207,23 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
       setError(null);
 
       try {
-        // TODO: Implement real wallet adapter integration
-        await new Promise((resolve) => setTimeout(resolve, 1200)); // Simulate network delay
-        const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
+        const payload = {
+          data: {
+            function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::exercise_option`,
+            typeArguments: [],
+            functionArguments: [optionId, settlementPrice],
+          },
+        };
 
-        console.log('Option exercised successfully');
+        const response = await signAndSubmitTransaction(payload);
+        console.log('Option exercised successfully:', response.hash);
 
         // Call success callback to refresh data
         if (onTransactionSuccess) {
           onTransactionSuccess();
         }
 
-        return txHash;
+        return response.hash;
       } catch (err: unknown) {
         const parsedError = handleTransactionError(err, 'Option Exercise');
         setError(parsedError.userMessage);
@@ -237,9 +241,9 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
   // Create an option series
   const createSeries = useCallback(
     async (
-      strikePrice: number, // eslint-disable-line @typescript-eslint/no-unused-vars
-      expirySeconds: number, // eslint-disable-line @typescript-eslint/no-unused-vars
-      optionType: OptionType, // eslint-disable-line @typescript-eslint/no-unused-vars
+      strikePrice: number,
+      expirySeconds: number,
+      optionType: OptionType,
     ): Promise<string | null> => {
       if (!connected || !account?.address) {
         console.warn('Wallet not connected: Please connect your wallet first');
@@ -250,21 +254,25 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
       setError(null);
 
       try {
-        // TODO: Use this for real wallet adapter integration
-        // const optionTypeValue = optionType === 'call' ? 0 : 1;
+        const optionTypeValue = optionType === 'call' ? 0 : 1;
 
-        // TODO: Implement real wallet adapter integration
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-        const txHash = `0x${Math.random().toString(16).substring(2, 10)}...`;
+        const payload = {
+          data: {
+            function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::create_series`,
+            typeArguments: [],
+            functionArguments: [strikePrice, expirySeconds, optionTypeValue],
+          },
+        };
 
-        console.log('Series created successfully');
+        const response = await signAndSubmitTransaction(payload);
+        console.log('Series created successfully:', response.hash);
 
         // Call success callback to refresh data
         if (onTransactionSuccess) {
           onTransactionSuccess();
         }
 
-        return txHash;
+        return response.hash;
       } catch (err: unknown) {
         const parsedError = handleTransactionError(err, 'Series Creation');
         setError(parsedError.userMessage);

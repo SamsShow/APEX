@@ -31,10 +31,12 @@ export function Topbar() {
         <Button
           variant="ghost"
           size="sm"
-          className="hidden md:flex items-center gap-1 border border-slate-700/50 bg-slate-800/30 hover:bg-slate-700/50 text-slate-300"
+          className="hidden md:flex items-center gap-2 border border-slate-700/50 bg-slate-800/30 hover:bg-slate-700/50 text-slate-300"
         >
           <Command className="h-4 w-4" />
-          <span className="text-xs">⌘K</span>
+          <kbd className="text-[10px] font-medium bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">
+            ⌘K
+          </kbd>
         </Button>
         <ConnectWalletButton />
       </div>
