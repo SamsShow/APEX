@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { SplineCanvas } from '@/components/three/SplineCanvas';
 import { InlineSpline } from '@/components/three/SplineInline';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Play } from 'lucide-react';
 
 export function Hero() {
   return (
@@ -87,9 +88,22 @@ export function Hero() {
             transition={{ delay: 1.3, duration: 0.6 }}
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-3 shadow-lg shadow-blue-500/25">
-                Get Started
-              </Button>
+              <Link href="/app">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-3 shadow-lg shadow-blue-500/25">
+                  Get Started
+                </Button>
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href="/demo">
+                <Button
+                  variant="outline"
+                  className="border-2 border-green-400/50 hover:border-green-400 hover:bg-green-400/10 backdrop-blur-sm px-8 py-3 text-green-400 hover:text-green-300"
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  Test the Demo
+                </Button>
+              </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
