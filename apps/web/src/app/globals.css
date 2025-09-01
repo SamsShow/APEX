@@ -12,8 +12,7 @@ body {
   background:
     radial-gradient(800px 500px at 50% -10%, rgba(229, 231, 235, 0.12), transparent 60%),
     radial-gradient(600px 400px at 10% 20%, rgba(148, 163, 184, 0.1), transparent 60%),
-    radial-gradient(600px 400px at 90% 20%, rgba(148, 163, 184, 0.1), transparent 60%),
-    #0a0a0a;
+    radial-gradient(600px 400px at 90% 20%, rgba(148, 163, 184, 0.1), transparent 60%), #0a0a0a;
 }
 
 @layer utilities {
@@ -23,9 +22,56 @@ body {
 
   .grid-pattern {
     background-size: 40px 40px;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   }
+}
+
+/* Dialog/Modal positioning fixes */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+}
+
+.dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 101;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 1rem;
+}
+
+/* Ensure proper modal positioning on small screens */
+@media (max-height: 600px) {
+  .dialog-content {
+    top: 5%;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Additional modal positioning utilities */
+.modal-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.modal-content {
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
 }
 
 /* Shiny silver sweep animation */

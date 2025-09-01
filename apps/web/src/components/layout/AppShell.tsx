@@ -10,7 +10,7 @@ import { StatusBar } from '@/components/layout/StatusBar';
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <ToastProvider>
-      <div className="flex min-h-screen w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-zinc-100">
+      <div className="flex min-h-screen w-full bg-gradient-to-br from-black via-neutral-950 to-black text-white">
         <Sidebar />
         <div className="flex min-h-screen flex-1 flex-col">
           <Topbar />

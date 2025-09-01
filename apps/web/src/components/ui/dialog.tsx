@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 
 interface DialogContextType {
@@ -65,23 +66,27 @@ export function DialogContent({ children, className }: DialogContentProps) {
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={() => setOpen(false)}
-      />
+  const modal = (
+    <>
+      <div className="dialog-overlay" onClick={() => setOpen(false)} />
       <div
         className={cn(
-          'relative z-[91] w-full max-w-md mx-auto rounded-xl border border-white/10 bg-black/80 p-6 shadow-glow max-h-[90vh] overflow-y-auto',
+          'dialog-content pointer-events-auto w-full max-w-md rounded-xl border border-zinc-700 bg-zinc-900/95 backdrop-blur-xl p-6 shadow-2xl',
           className,
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>
-    </div>
+    </>
   );
+
+  // Ensure we are in a browser environment
+  if (typeof window !== 'undefined') {
+    return createPortal(modal, document.body);
+  }
+
+  return null;
 }
 
 interface DialogHeaderProps {

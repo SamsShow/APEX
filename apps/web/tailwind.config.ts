@@ -16,13 +16,23 @@ const config: Config = {
           foreground: '#09090b',
         },
         muted: {
-          DEFAULT: '#1a1a1a',
+          DEFAULT: '#27272a', // zinc-800
           foreground: '#a1a1aa',
         },
         card: {
-          DEFAULT: '#0f0f0f',
+          DEFAULT: '#18181b', // zinc-900
           foreground: '#e5e7eb',
         },
+        popover: {
+          DEFAULT: '#18181b', // zinc-900
+          foreground: '#e5e7eb',
+        },
+        input: '#3f3f46', // zinc-700
+        accent: {
+          DEFAULT: '#27272a', // zinc-800
+          foreground: '#e5e7eb',
+        },
+        ring: '#3b82f6', // blue-500
       },
       container: {
         center: true,

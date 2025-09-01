@@ -49,12 +49,12 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky left-0 top-0 z-40 hidden h-screen w-64 shrink-0 border-r border-slate-800/50 bg-slate-900/80 backdrop-blur-lg md:block">
-      <div className="flex h-16 items-center gap-3 px-5 border-b border-slate-800/30">
+    <aside className="sticky left-0 top-0 z-40 hidden h-screen w-64 shrink-0 border-r border-zinc-800/50 bg-zinc-900/80 backdrop-blur-lg md:block">
+      <div className="flex h-16 items-center gap-3 px-5 border-b border-zinc-800/30">
         <Logo className="h-7" />
         <div className="flex flex-col">
           <span className="text-sm font-semibold text-white">Apex</span>
-          <span className="text-xs text-slate-400">Trading Platform</span>
+          <span className="text-xs text-zinc-400">Trading Platform</span>
         </div>
       </div>
       <nav className="flex flex-col gap-1 px-3 py-4">
@@ -66,7 +66,7 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 text-slate-400 hover:bg-slate-800/50 hover:text-white',
+                'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 text-zinc-400 hover:bg-zinc-800/50 hover:text-white',
                 active &&
                   'bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-lg shadow-blue-500/10',
               )}
@@ -74,7 +74,7 @@ export function Sidebar() {
               <span
                 className={cn(
                   'transition-colors',
-                  active ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300',
+                  active ? 'text-blue-400' : 'text-zinc-500 group-hover:text-zinc-300',
                 )}
               >
                 {item.icon}
@@ -113,15 +113,15 @@ export function MobileSidebar({ open, onClose }: { open: boolean; onClose: () =>
       />
       <div
         className={cn(
-          'absolute left-0 top-0 flex h-full w-72 flex-col border-r border-slate-800/50 bg-slate-900/95 backdrop-blur-lg transition-transform duration-300 ease-in-out',
+          'absolute left-0 top-0 flex h-full w-72 flex-col border-r border-zinc-800/50 bg-zinc-900/95 backdrop-blur-lg transition-transform duration-300 ease-in-out',
           open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="flex h-16 items-center gap-3 px-5 border-b border-slate-800/30">
+        <div className="flex h-16 items-center gap-3 px-5 border-b border-zinc-800/30">
           <Logo className="h-7" />
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-white">Apex</span>
-            <span className="text-xs text-slate-400">Trading Platform</span>
+            <span className="text-xs text-zinc-400">Trading Platform</span>
           </div>
         </div>
         <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
