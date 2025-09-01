@@ -24,7 +24,7 @@ const steps = [
 export function HowItWorks() {
   return (
     <section id="how" className="container py-16">
-      <h2 className="text-2xl font-semibold text-white">How it works</h2>
+      <h2 className="text-2xl font-jersey font-semibold text-white">How it works</h2>
       <p className="mt-2 max-w-2xl text-zinc-300">
         Apex leverages parallel execution and atomic settlement to remove execution risk while
         delivering hyper throughput on-chain.
@@ -38,7 +38,7 @@ export function HowItWorks() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.1, duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="group relative overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-br from-white/[0.08] via-white/[0.05] to-transparent p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/30 hover:shadow-xl hover:shadow-white/5"
+            className="group relative overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-br from-white/[0.08] via-white/[0.05] to-transparent p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/30 hover:shadow-xl hover:shadow-white/5 metallic-card"
           >
             {/* Animated gradient background */}
             <div className="pointer-events-none absolute inset-0 -z-10">
@@ -53,7 +53,7 @@ export function HowItWorks() {
               {i + 1}
             </div>
 
-            <div className="text-sm font-medium text-blue-300">{s.title}</div>
+            <div className="text-sm font-jersey font-medium text-blue-300">{s.title}</div>
             <div className="mt-2 text-zinc-200">{s.body}</div>
 
             {/* Decorative element */}

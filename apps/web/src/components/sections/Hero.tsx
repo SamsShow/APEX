@@ -35,7 +35,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
-            <Heading className="text-balance text-5xl font-semibold leading-tight sm:text-6xl md:text-7xl">
+            <Heading className="text-balance text-5xl font-jersey font-semibold leading-tight sm:text-6xl md:text-7xl">
               <span className="text-white/90">A hyper-fast on-chain</span>
               <br />
               <span className="bg-gradient-to-r from-zinc-200 via-white to-zinc-300 bg-clip-text text-transparent animate-shine bg-[length:200%_100%]">

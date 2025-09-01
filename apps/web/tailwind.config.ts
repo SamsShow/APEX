@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        jersey: ['Jersey 25', 'cursive'],
+      },
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',

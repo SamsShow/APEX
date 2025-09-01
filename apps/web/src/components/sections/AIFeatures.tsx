@@ -77,7 +77,7 @@ export function AIFeatures() {
             <span>AI-Powered Trading</span>
           </div>
 
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-6xl font-jersey font-bold text-white mb-6">
             Intelligence That{' '}
             <span className="bg-gradient-to-r from-zinc-200 via-zinc-300 to-zinc-200 bg-clip-text text-transparent">
               Trades Smarter
@@ -100,7 +100,7 @@ export function AIFeatures() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className={`group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br ${feature.gradient} p-6 backdrop-blur-sm hover:border-zinc-700 transition-all duration-500`}
+              className={`group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br ${feature.gradient} p-6 backdrop-blur-sm hover:border-zinc-700 transition-all duration-500 metallic-card`}
             >
               {/* Animated background */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -115,7 +115,7 @@ export function AIFeatures() {
                   {feature.icon}
                 </motion.div>
 
-                <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-white transition-colors duration-300">
+                <h3 className="text-xl font-jersey font-semibold text-white mb-3 group-hover:text-white transition-colors duration-300">
                   {feature.title}
                 </h3>
 
@@ -155,7 +155,7 @@ export function AIFeatures() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
-              className="text-center p-4 rounded-xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 hover:bg-zinc-800/50 transition-colors duration-300"
+              className="text-center p-4 rounded-xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 hover:bg-zinc-800/50 transition-colors duration-300 metallic-card"
             >
               <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
               <div className="text-xs font-medium text-zinc-300 mb-1">{stat.label}</div>

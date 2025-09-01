@@ -72,7 +72,7 @@ export function BentoGrid() {
               transition: { duration: 0.3, ease: 'easeOut' },
             }}
             className={cn(
-              'group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 p-6 backdrop-blur-sm transition-all duration-500 hover:border-zinc-700 hover:shadow-2xl hover:shadow-zinc-900/20 cursor-pointer',
+              'group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 p-6 backdrop-blur-sm transition-all duration-500 hover:border-zinc-700 hover:shadow-2xl hover:shadow-zinc-900/20 cursor-pointer metallic-card',
               item.className,
             )}
           >
@@ -117,7 +117,7 @@ export function BentoGrid() {
             </div>
 
             <motion.div
-              className="text-xl font-semibold text-white mb-2"
+              className="text-xl font-jersey font-semibold text-white mb-2"
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 + 0.3, duration: 0.5 }}

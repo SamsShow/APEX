@@ -76,7 +76,7 @@ export function FeaturesShowcase() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-jersey font-bold text-white mb-6">
             Why Choose{' '}
             <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               Apex
@@ -98,7 +98,7 @@ export function FeaturesShowcase() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className={`group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br ${feature.gradient} p-6 backdrop-blur-sm hover:border-zinc-700 transition-all duration-300`}
+              className={`group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br ${feature.gradient} p-6 backdrop-blur-sm hover:border-zinc-700 transition-all duration-300 metallic-card`}
             >
               {/* Animated background */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -113,7 +113,7 @@ export function FeaturesShowcase() {
                   {feature.icon}
                 </motion.div>
 
-                <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-zinc-200 transition-colors duration-300">
+                <h3 className="text-xl font-jersey font-semibold text-white mb-2 group-hover:text-zinc-200 transition-colors duration-300">
                   {feature.title}
                 </h3>
 
