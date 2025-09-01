@@ -2,57 +2,67 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Shield, Clock, BarChart3, Code, Users } from 'lucide-react';
+import { Zap, Shield, Clock, Code, Users, Brain, TrendingUp } from 'lucide-react';
 
 export function FeaturesShowcase() {
   const features = [
     {
-      icon: <Zap className="h-8 w-8 text-yellow-400" />,
+      icon: <Zap className="h-7 w-7 text-zinc-300" />,
       title: 'Lightning Fast',
       description: 'Sub-second finality with parallel processing across multiple shards',
       stat: '0.3s',
       statLabel: 'Avg Settlement',
-      gradient: 'from-yellow-500/20 to-orange-500/20',
+      gradient: 'from-zinc-700/30 to-zinc-800/30',
     },
     {
-      icon: <Shield className="h-8 w-8 text-green-400" />,
+      icon: <Shield className="h-7 w-7 text-zinc-400" />,
       title: 'Risk Free',
       description: 'Atomic multi-leg execution ensures all-or-nothing settlement',
       stat: '100%',
       statLabel: 'Success Rate',
-      gradient: 'from-green-500/20 to-emerald-500/20',
+      gradient: 'from-zinc-600/30 to-zinc-700/30',
     },
     {
-      icon: <Clock className="h-8 w-8 text-blue-400" />,
+      icon: <Clock className="h-7 w-7 text-zinc-300" />,
       title: 'Always Available',
       description: '99.9% uptime with automatic failover and recovery systems',
       stat: '99.9%',
       statLabel: 'Uptime',
-      gradient: 'from-blue-500/20 to-cyan-500/20',
+      gradient: 'from-zinc-700/30 to-zinc-600/30',
     },
     {
-      icon: <BarChart3 className="h-8 w-8 text-purple-400" />,
-      title: 'Deep Analytics',
-      description: 'Real-time market data with advanced charting and analysis tools',
-      stat: '50+',
-      statLabel: 'Metrics',
-      gradient: 'from-purple-500/20 to-pink-500/20',
+      icon: <Brain className="h-7 w-7 text-zinc-400" />,
+      title: 'AI-Powered Analytics',
+      description:
+        'Intelligent market analysis with sentiment tracking, risk assessment, and anomaly detection',
+      stat: 'AI',
+      statLabel: 'Enhanced',
+      gradient: 'from-zinc-600/30 to-zinc-700/30',
     },
     {
-      icon: <Code className="h-8 w-8 text-red-400" />,
+      icon: <Code className="h-7 w-7 text-zinc-300" />,
       title: 'Developer First',
       description: 'Comprehensive SDKs and APIs for seamless integration',
       stat: '12',
       statLabel: 'Languages',
-      gradient: 'from-red-500/20 to-rose-500/20',
+      gradient: 'from-zinc-700/30 to-zinc-800/30',
     },
     {
-      icon: <Users className="h-8 w-8 text-indigo-400" />,
+      icon: <Users className="h-7 w-7 text-zinc-400" />,
       title: 'Enterprise Ready',
       description: 'Built for institutions with enterprise-grade security and compliance',
       stat: '500+',
       statLabel: 'Institutions',
-      gradient: 'from-indigo-500/20 to-blue-500/20',
+      gradient: 'from-zinc-600/30 to-zinc-700/30',
+    },
+    {
+      icon: <TrendingUp className="h-7 w-7 text-zinc-300" />,
+      title: 'Smart Trading',
+      description:
+        'AI-driven strategy recommendations and automated risk management for optimal returns',
+      stat: '95%',
+      statLabel: 'Accuracy',
+      gradient: 'from-zinc-700/30 to-zinc-600/30',
     },
   ];
 
@@ -88,7 +98,7 @@ export function FeaturesShowcase() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${feature.gradient} p-8 backdrop-blur-sm hover:border-white/20 transition-all duration-300`}
+              className={`group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br ${feature.gradient} p-6 backdrop-blur-sm hover:border-zinc-700 transition-all duration-300`}
             >
               {/* Animated background */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -98,27 +108,27 @@ export function FeaturesShowcase() {
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   transition={{ duration: 0.2 }}
-                  className="mb-6 inline-flex p-3 rounded-xl bg-white/10 backdrop-blur-sm"
+                  className="mb-4 inline-flex p-2 rounded-xl bg-zinc-800/80 backdrop-blur-sm"
                 >
                   {feature.icon}
                 </motion.div>
 
-                <h3 className="text-2xl font-semibold text-white mb-3 group-hover:text-blue-300 transition-colors duration-300">
+                <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-zinc-200 transition-colors duration-300">
                   {feature.title}
                 </h3>
 
-                <p className="text-zinc-300 mb-6 leading-relaxed">{feature.description}</p>
+                <p className="text-zinc-400 mb-4 leading-relaxed text-sm">{feature.description}</p>
 
                 {/* Stat */}
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-white">{feature.stat}</span>
-                  <span className="text-sm text-zinc-400">{feature.statLabel}</span>
+                  <span className="text-2xl font-bold text-white">{feature.stat}</span>
+                  <span className="text-xs text-zinc-400">{feature.statLabel}</span>
                 </div>
               </div>
 
               {/* Decorative elements */}
-              <div className="absolute -bottom-1 -right-1 w-20 h-20 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-xl opacity-50" />
-              <div className="absolute top-4 right-4 w-2 h-2 bg-white/30 rounded-full animate-pulse" />
+              <div className="absolute -bottom-1 -right-1 w-16 h-16 bg-gradient-to-br from-zinc-600/10 to-transparent rounded-full blur-xl opacity-30" />
+              <div className="absolute top-4 right-4 w-1.5 h-1.5 bg-zinc-500/50 rounded-full animate-pulse" />
             </motion.div>
           ))}
         </div>

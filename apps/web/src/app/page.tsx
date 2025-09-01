@@ -2,6 +2,7 @@ import { Navbar } from '@/components/sections/Navbar';
 import { Hero } from '@/components/sections/Hero';
 import { BentoGrid } from '@/components/sections/BentoGrid';
 import { FeaturesShowcase } from '@/components/sections/FeaturesShowcase';
+import { AIFeatures } from '@/components/sections/AIFeatures';
 import { LogosMarquee } from '@/components/sections/LogosMarquee';
 import { Stats } from '@/components/sections/Stats';
 import { CTA } from '@/components/sections/CTA';
@@ -18,6 +19,7 @@ export default function Home() {
         <Hero />
         <BentoGrid />
         <FeaturesShowcase />
+        <AIFeatures />
         <HowItWorks />
         <Architecture />
         <LogosMarquee />

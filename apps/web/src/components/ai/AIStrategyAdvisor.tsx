@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -43,7 +43,7 @@ export function AIStrategyAdvisor({ onStrategySelect, className = '' }: AIStrate
   );
 
   // Generate AI recommendations
-  const generateRecommendations = async () => {
+  const generateRecommendations = useCallback(async () => {
     setIsAnalyzing(true);
 
     try {
@@ -81,7 +81,7 @@ export function AIStrategyAdvisor({ onStrategySelect, className = '' }: AIStrate
     } finally {
       setIsAnalyzing(false);
     }
-  };
+  }, [prices]);
 
   // Auto-generate recommendations on mount and when prices change
   useEffect(() => {

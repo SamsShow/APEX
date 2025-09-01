@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -60,7 +60,7 @@ export function AnomalyDetectionDashboard({ className = '' }: AnomalyDetectionDa
   }, [prices]);
 
   // Analyze for anomalies
-  const performAnomalyDetection = async () => {
+  const performAnomalyDetection = useCallback(async () => {
     setIsAnalyzing(true);
     try {
       const newAnomalies: Anomaly[] = [];
@@ -92,7 +92,7 @@ export function AnomalyDetectionDashboard({ className = '' }: AnomalyDetectionDa
     } finally {
       setIsAnalyzing(false);
     }
-  };
+  }, [prices]);
 
   // Auto-analyze on mount and when market data changes
   useEffect(() => {

@@ -25,7 +25,7 @@ export function Hero() {
             transition={{ delay: 0.2, duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-white/10 to-white/5 px-4 py-2 text-sm text-zinc-300 backdrop-blur-xl shadow-xl"
           >
-            🚀 Revolutionizing DeFi with
+            🚀 Revolutionizing DeFi with AI &
             <span className="font-semibold text-white bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               atomic execution
             </span>
@@ -49,8 +49,8 @@ export function Hero() {
             transition={{ delay: 0.6, duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="mt-6 max-w-2xl text-lg text-zinc-300"
           >
-            Atomic trades with sub-second finality on Aptos. Lower fees, zero execution risk, built
-            for scale.
+            Atomic trades with sub-second finality on Aptos. Powered by AI for intelligent trading,
+            risk management, and market analysis. Lower fees, zero execution risk, built for scale.
           </motion.p>
           <motion.ul
             className="mt-8 grid max-w-xl grid-cols-1 gap-3 text-zinc-300 sm:grid-cols-2"
@@ -61,8 +61,8 @@ export function Hero() {
             {[
               'Parallel matching across shardable books',
               'Atomic multi-leg settlement',
-              'On-chain risk engine',
-              'SDKs for rapid integration',
+              'AI-powered risk management',
+              'Smart strategy recommendations',
             ].map((item, index) => (
               <motion.li
                 key={item}

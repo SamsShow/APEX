@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -49,7 +49,7 @@ export function SentimentAnalysisDashboard({
   const currentPrice = prices[symbol]?.price || 0;
 
   // Analyze sentiment
-  const analyzeSentiment = async () => {
+  const analyzeSentiment = useCallback(async () => {
     setIsAnalyzing(true);
     try {
       const data = await sentimentAnalysisEngine.analyzeSentiment(symbol);
@@ -63,7 +63,7 @@ export function SentimentAnalysisDashboard({
     } finally {
       setIsAnalyzing(false);
     }
-  };
+  }, [symbol]);
 
   // Toggle real-time monitoring
   const toggleRealTimeMonitoring = () => {
