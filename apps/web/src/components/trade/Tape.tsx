@@ -13,11 +13,11 @@ type Trade = {
 };
 
 export function Tape() {
-  const { trades, isConnected, connectionStatus } = useTradesWebSocket('APT/USD');
+  const { trades, connectionStatus } = useTradesWebSocket('APT/USD');
 
   // Convert WebSocket trades to display format
   const displayTrades = React.useMemo(() => {
-    return trades.slice(0, 20).map((trade: Trade) => ({
+    return (trades as Trade[]).slice(0, 20).map((trade) => ({
       id: trade.id,
       side: trade.side === 'buy' ? 'Buy' : 'Sell',
       price: trade.price,

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 
 // Mock orderbook data
-let mockOrderBook = {
+const mockOrderBook = {
   symbol: 'APT/USD',
   bids: [
     [5.2, 1000],

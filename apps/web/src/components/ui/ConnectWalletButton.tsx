@@ -11,14 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Wallet, ChevronDown, Copy, ExternalLink, LogOut, Network } from 'lucide-react';
+import { Wallet, ChevronDown, Copy, ExternalLink, LogOut } from 'lucide-react';
 import { useWalletContext } from '@/components/providers/WalletProvider';
-
-interface WalletInfo {
-  name: string;
-  icon?: string;
-  url?: string;
-}
 
 const walletIcons: Record<string, string> = {
   Petra: '🟣',
@@ -36,9 +30,16 @@ export function ConnectWalletButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // Debug wallet connection state
+  React.useEffect(() => {
+    console.log('Wallet connection state:', { connected, account, wallets });
+  }, [connected, account, wallets]);
+
   const handleConnect = async (walletName: string) => {
     try {
+      console.log(`Attempting to connect to ${walletName}...`);
       await connect(walletName);
+      console.log(`Connected to ${walletName} successfully`);
       setIsOpen(false);
     } catch (e) {
       console.error('Failed to connect wallet:', e);
@@ -56,17 +57,28 @@ export function ConnectWalletButton() {
 
   const copyAddress = async () => {
     if (account?.address) {
-      await navigator.clipboard.writeText(account.address);
+      const addressString =
+        typeof account.address === 'string' ? account.address : account.address.toString();
+      await navigator.clipboard.writeText(addressString);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
 
-  const truncateAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  const truncateAddress = (address: string | { toString(): string } | undefined) => {
+    if (!address) {
+      return '0x0000...0000';
+    }
+    const addressString = typeof address === 'string' ? address : address.toString();
+    if (addressString.length < 10) {
+      return addressString;
+    }
+    return `${addressString.slice(0, 6)}...${addressString.slice(-4)}`;
   };
 
+  // Make sure we have both connected state and account object
   if (connected && account) {
+    console.log('Rendering connected wallet UI with account:', account);
     return (
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
@@ -100,10 +112,12 @@ export function ConnectWalletButton() {
                     size="sm"
                     variant="ghost"
                     onClick={() =>
-                      window.open(
-                        `https://explorer.aptoslabs.com/account/${account.address}?network=testnet`,
-                        '_blank',
-                      )
+                      account?.address
+                        ? window.open(
+                            `https://explorer.aptoslabs.com/account/${typeof account.address === 'string' ? account.address : account.address.toString()}?network=testnet`,
+                            '_blank',
+                          )
+                        : null
                     }
                     className="h-6 w-6 p-0"
                   >
@@ -111,7 +125,13 @@ export function ConnectWalletButton() {
                   </Button>
                 </div>
               </div>
-              <div className="font-mono text-sm text-zinc-100">{account.address}</div>
+              <div className="font-mono text-sm text-zinc-100">
+                {account.address
+                  ? typeof account.address === 'string'
+                    ? account.address
+                    : account.address.toString()
+                  : 'No address available'}
+              </div>
               {copied && <div className="text-xs text-green-400 mt-1">Address copied!</div>}
             </div>
 
@@ -207,14 +227,14 @@ export function ConnectWalletButton() {
 
           <div className="pt-4 border-t border-zinc-700">
             <div className="text-xs text-zinc-500 text-center">
-              Don't have a wallet?{' '}
+              Don&apos;t have a wallet?{' '}
               <a
                 href="https://petra.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 hover:text-blue-300"
               >
-                Get Petra Wallet
+                Get Petra Wallet&apos;
               </a>
             </div>
           </div>

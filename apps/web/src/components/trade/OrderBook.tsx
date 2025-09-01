@@ -10,7 +10,7 @@ interface OrderBookEntry {
 }
 
 export function OrderBook() {
-  const { orderBook, isConnected, connectionStatus } = useOrderBookWebSocket('APT/USD');
+  const { orderBook, connectionStatus } = useOrderBookWebSocket('APT/USD');
 
   // Combine bids and asks into a single array for display
   const orderBookData: OrderBookEntry[] = React.useMemo(() => {

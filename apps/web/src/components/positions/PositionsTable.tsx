@@ -85,11 +85,15 @@ export function PositionsTable() {
         return 0;
     }
 
-    if (typeof aValue === 'string') {
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
       return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
     }
 
-    return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+
+    return 0;
   });
 
   const handleSort = (field: SortField) => {

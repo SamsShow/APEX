@@ -4,15 +4,15 @@ import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals
 class MockWebSocket {
   onopen?: () => void;
   onclose?: () => void;
-  onerror?: (event: any) => void;
-  onmessage?: (event: any) => void;
+  onerror?: (event: Event) => void;
+  onmessage?: (event: MessageEvent) => void;
   readyState = 0;
   CONNECTING = 0;
   OPEN = 1;
   CLOSING = 2;
   CLOSED = 3;
 
-  constructor(url: string) {
+  constructor() {
     this.readyState = this.OPEN;
     // Simulate connection opening
     setTimeout(() => {
@@ -25,16 +25,16 @@ class MockWebSocket {
 }
 
 // Mock global WebSocket
-global.WebSocket = MockWebSocket as any;
+(global as unknown as { WebSocket: typeof MockWebSocket }).WebSocket = MockWebSocket;
 
 // Mock the useWebSocket hook
 const mockWebSocketHook = () => {
-  let subscribers: Map<string, Set<(data: any) => void>> = new Map();
+  const subscribers: Map<string, Set<(data: unknown) => void>> = new Map();
   let isConnected = false;
-  let lastMessage: any = null;
+  const lastMessage: unknown = null;
   let connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error' = 'disconnected';
 
-  const subscribe = (channel: string, callback: (data: any) => void) => {
+  const subscribe = (channel: string, callback: (data: unknown) => void) => {
     if (!subscribers.has(channel)) {
       subscribers.set(channel, new Set());
     }
@@ -55,17 +55,18 @@ const mockWebSocketHook = () => {
     subscribers.delete(channel);
   };
 
-  const sendMessage = jest.fn((message: any) => {
+  const sendMessage = jest.fn((message: unknown) => {
     // Simulate sending message
     if (isConnected) {
       // Simulate response for price_update subscription
-      if (message.type === 'subscribe' && message.ids) {
+      const msg = message as { type?: string; ids?: string[] };
+      if (msg.type === 'subscribe' && msg.ids) {
         setTimeout(() => {
           // Simulate price update message
           const mockMessage = {
             type: 'price_update',
             price: { price: 5.25, conf: 0.01 },
-            id: message.ids[0],
+            id: msg.ids[0],
           };
 
           // Trigger subscribers

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { orders, updateOrder, deleteOrder, getOrder } from '@/lib/mockData';
+import { orders, updateOrder, getOrder } from '@/lib/mockData';
 
 // GET /api/orders/[id] - Get specific order
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
@@ -39,7 +39,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     // Update allowed fields
     const allowedFields = ['quantity', 'strikePrice'];
-    const updates: any = {};
+    const updates: Record<string, unknown> = {};
 
     for (const field of allowedFields) {
       if (body[field] !== undefined) {

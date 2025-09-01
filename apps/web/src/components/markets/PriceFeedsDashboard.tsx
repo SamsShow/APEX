@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { usePythPrices, PYTH_PRICE_FEEDS } from '@/lib/pyth';
+import { usePythPrices, PYTH_PRICE_FEEDS, PriceFeedSymbol } from '@/lib/pyth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function PriceFeedsDashboard() {
-  const prices = usePythPrices(Object.keys(PYTH_PRICE_FEEDS) as any);
+  const prices = usePythPrices(Object.keys(PYTH_PRICE_FEEDS) as PriceFeedSymbol[]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

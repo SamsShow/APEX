@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/sections/Navbar';
 import { Hero } from '@/components/sections/Hero';
 import { BentoGrid } from '@/components/sections/BentoGrid';
+import { FeaturesShowcase } from '@/components/sections/FeaturesShowcase';
 import { LogosMarquee } from '@/components/sections/LogosMarquee';
 import { Stats } from '@/components/sections/Stats';
 import { CTA } from '@/components/sections/CTA';
@@ -11,11 +12,12 @@ import { Testimonials } from '@/components/sections/Testimonials';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-neutral-950 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-black via-neutral-950 to-black text-white">
       <Navbar />
       <main>
         <Hero />
         <BentoGrid />
+        <FeaturesShowcase />
         <HowItWorks />
         <Architecture />
         <LogosMarquee />

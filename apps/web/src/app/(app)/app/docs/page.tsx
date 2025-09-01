@@ -325,7 +325,7 @@ export default function DocsPage() {
                             <h4 className="font-semibold text-white mb-3">Install Wallet</h4>
                             <p className="text-sm text-slate-400 leading-relaxed">
                               Download and install Petra, Martian, or Pontem wallet extension from
-                              your browser's extension store.
+                              your browser&apos;s extension store.
                             </p>
                             <div className="mt-4 space-y-2 text-xs text-slate-500">
                               <div>• Create new wallet or import existing</div>
@@ -359,7 +359,7 @@ export default function DocsPage() {
                               Visit Apex platform and connect your wallet to start trading options.
                             </p>
                             <div className="mt-4 space-y-2 text-xs text-slate-500">
-                              <div>• Click "Connect Wallet" button</div>
+                              <div>• Click &quot;Connect Wallet&quot; button</div>
                               <div>• Select your wallet extension</div>
                               <div>• Approve connection request</div>
                             </div>
@@ -996,7 +996,8 @@ export default function DocsPage() {
                             </h4>
                             <ul className="space-y-2 text-sm text-slate-400">
                               <li>
-                                • <strong className="text-zinc-300">GTC:</strong> Good 'Til Canceled
+                                • <strong className="text-zinc-300">GTC:</strong> Good &apos;Til
+                                Canceled
                               </li>
                               <li>
                                 • <strong className="text-zinc-300">IOC:</strong> Immediate or
@@ -1006,7 +1007,8 @@ export default function DocsPage() {
                                 • <strong className="text-zinc-300">FOK:</strong> Fill or Kill
                               </li>
                               <li>
-                                • <strong className="text-zinc-300">GTD:</strong> Good 'Til Date
+                                • <strong className="text-zinc-300">GTD:</strong> Good &apos;Til
+                                Date
                               </li>
                             </ul>
                           </div>

@@ -1,6 +1,15 @@
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from '@jest/globals';
 
 // Mock the Next.js API structure
+type OrderData = {
+  userId: string;
+  symbol: string;
+  type: string;
+  side: string;
+  quantity: number;
+  strikePrice: number;
+  expiryDate: string;
+};
 const mockOrders = [
   {
     id: '1',
@@ -58,7 +67,7 @@ const mockGET = async (url: string) => {
   };
 };
 
-const mockPOST = async (body: any) => {
+const mockPOST = async (body: OrderData) => {
   const { userId, symbol, type, side, quantity, strikePrice, expiryDate } = body;
 
   // Validate required fields

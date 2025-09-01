@@ -1,21 +1,23 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { AptosWalletAdapterProvider } from '@aptos-labs/wallet-adapter-react';
 import { Network } from '@aptos-labs/ts-sdk';
-import { PetraWallet } from 'petra-plugin-wallet-adapter';
-import { MartianWallet } from '@martianwallet/aptos-wallet-adapter';
-import { PontemWallet } from '@pontem/wallet-adapter-plugin';
-import { TrustWallet } from '@trustwallet/aptos-wallet-adapter';
-import { FewchaWallet } from 'fewcha-plugin-wallet-adapter';
+// Wallet adapters are configured automatically in newer versions
+// import { PetraWallet } from 'petra-plugin-wallet-adapter';
+// import { MartianWallet } from '@martianwallet/aptos-wallet-adapter';
+// import { PontemWallet } from '@pontem/wallet-adapter-plugin';
+// import { TrustWallet } from '@trustwallet/aptos-wallet-adapter';
+// import { FewchaWallet } from 'fewcha-plugin-wallet-adapter';
 
-const wallets = [
-  new PetraWallet(),
-  new MartianWallet(),
-  new PontemWallet(),
-  new TrustWallet(),
-  new FewchaWallet(),
-];
+// Wallets are now configured automatically by the wallet adapter
+// const wallets = [
+//   new PetraWallet(),
+//   new MartianWallet(),
+//   new PontemWallet(),
+//   new TrustWallet(),
+//   new FewchaWallet(),
+// ];
 
 export type NetworkType = 'mainnet' | 'testnet' | 'devnet';
 
@@ -64,7 +66,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       value={{ network, setNetwork: handleNetworkChange, isNetworkSwitching }}
     >
       <AptosWalletAdapterProvider
-        plugins={wallets}
         autoConnect={true}
         dappConfig={{
           network: getNetworkConfig(network),

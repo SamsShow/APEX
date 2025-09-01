@@ -43,6 +43,10 @@ interface NotificationProviderProps {
 export function NotificationProvider({ children }: NotificationProviderProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
+  const removeNotification = useCallback((id: string) => {
+    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+  }, []);
+
   const addNotification = useCallback(
     (notification: Omit<Notification, 'id' | 'timestamp'>) => {
       const id = `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -62,12 +66,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
         }, newNotification.duration);
       }
     },
-    [], // removeNotification is stable and doesn't need to be in dependencies
+    [removeNotification],
   );
-
-  const removeNotification = useCallback((id: string) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
-  }, []);
 
   const clearAllNotifications = useCallback(() => {
     setNotifications([]);

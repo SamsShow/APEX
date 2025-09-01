@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { usePythPriceWithFallback, PYTH_PRICE_FEEDS } from '@/lib/pyth';
+import { usePythPriceWithFallback } from '@/lib/pyth';
 
 export function AptPriceTicker() {
-  const { price, confidence, lastUpdated, source } = usePythPriceWithFallback('APT/USD');
+  const { price, lastUpdated, source } = usePythPriceWithFallback('APT/USD');
 
   const formatted = price ? `$${price.toFixed(3)}` : '—';
   const freshness = lastUpdated ? `${Math.round((Date.now() - lastUpdated) / 1000)}s ago` : '—';

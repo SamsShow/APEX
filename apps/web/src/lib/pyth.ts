@@ -86,7 +86,17 @@ export function usePythPrices(symbols: PriceFeedSymbol[]) {
         status: 'connecting' | 'connected' | 'error';
       }
     >
-  >({} as any);
+  >(
+    {} as Record<
+      PriceFeedSymbol,
+      {
+        price: number | null;
+        confidence: number | null;
+        lastUpdated: number | null;
+        status: 'connecting' | 'connected' | 'error';
+      }
+    >,
+  );
 
   React.useEffect(() => {
     const priceIds = symbols.map((symbol) => PYTH_PRICE_FEEDS[symbol]).filter(Boolean);

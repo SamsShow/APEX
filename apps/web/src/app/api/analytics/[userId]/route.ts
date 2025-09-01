@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+interface AnalyticsResponseData {
+  userId: string;
+  overview: typeof analyticsData.overview;
+  assetAllocation: typeof analyticsData.assetAllocation;
+  strategyPerformance: typeof analyticsData.strategyPerformance;
+  marketAnalysis: typeof analyticsData.marketAnalysis;
+  lastUpdated: typeof analyticsData.lastUpdated;
+  performance?: typeof analyticsData.performance;
+  riskMetrics?: typeof analyticsData.riskMetrics;
+}
+
 // Mock analytics data
 const analyticsData = {
   userId: 'user_123',
@@ -92,7 +103,6 @@ const analyticsData = {
 export async function GET(request: NextRequest, { params }: { params: { userId: string } }) {
   try {
     const { searchParams } = new URL(request.url);
-    const timeframe = searchParams.get('timeframe') || 'daily';
     const includePerformance = searchParams.get('includePerformance') !== 'false';
     const includeRisk = searchParams.get('includeRisk') !== 'false';
 
@@ -101,27 +111,27 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
       return NextResponse.json({ error: 'Analytics not found' }, { status: 404 });
     }
 
-    const response: any = {
-      success: true,
-      data: {
-        userId: analyticsData.userId,
-        overview: analyticsData.overview,
-        assetAllocation: analyticsData.assetAllocation,
-        strategyPerformance: analyticsData.strategyPerformance,
-        marketAnalysis: analyticsData.marketAnalysis,
-        lastUpdated: analyticsData.lastUpdated,
-      },
+    const responseData: AnalyticsResponseData = {
+      userId: analyticsData.userId,
+      overview: analyticsData.overview,
+      assetAllocation: analyticsData.assetAllocation,
+      strategyPerformance: analyticsData.strategyPerformance,
+      marketAnalysis: analyticsData.marketAnalysis,
+      lastUpdated: analyticsData.lastUpdated,
     };
 
     if (includePerformance) {
-      response.data.performance =
-        analyticsData.performance[timeframe as keyof typeof analyticsData.performance] ||
-        analyticsData.performance.daily;
+      responseData.performance = analyticsData.performance;
     }
 
     if (includeRisk) {
-      response.data.riskMetrics = analyticsData.riskMetrics;
+      responseData.riskMetrics = analyticsData.riskMetrics;
     }
+
+    const response = {
+      success: true,
+      data: responseData,
+    };
 
     return NextResponse.json(response);
   } catch (error) {

@@ -1,7 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+type MarketData = {
+  symbol: string;
+  baseAsset: string;
+  quoteAsset: string;
+  price: number;
+  change24h: number;
+  changePercent24h: number;
+  high24h: number;
+  low24h: number;
+  volume24h: number;
+  marketCap: number;
+  orderBook: {
+    bids: [number, number][];
+    asks: [number, number][];
+  };
+  recentTrades: {
+    id: string;
+    price: number;
+    quantity: number;
+    side: 'buy' | 'sell';
+    timestamp: string;
+  }[];
+  priceHistory?: {
+    '1m'?: { timestamp: number; price: number }[];
+    '5m'?: { timestamp: number; price: number }[];
+    '15m'?: { timestamp: number; price: number }[];
+    '1h'?: { timestamp: number; price: number }[];
+    '4h'?: { timestamp: number; price: number }[];
+    '1d'?: { timestamp: number; price: number }[];
+  };
+  lastUpdated: string;
+};
+
 // Mock market data for different symbols
-const marketData: Record<string, any> = {
+const marketData: Record<string, MarketData> = {
   'APT/USD': {
     symbol: 'APT/USD',
     baseAsset: 'APT',
@@ -135,34 +168,50 @@ export async function GET(request: NextRequest, { params }: { params: { symbol: 
     }
 
     // Build response based on requested data
-    const response: any = {
-      success: true,
-      data: {
-        symbol: data.symbol,
-        baseAsset: data.baseAsset,
-        quoteAsset: data.quoteAsset,
-        price: data.price,
-        change24h: data.change24h,
-        changePercent24h: data.changePercent24h,
-        high24h: data.high24h,
-        low24h: data.low24h,
-        volume24h: data.volume24h,
-        marketCap: data.marketCap,
-        lastUpdated: data.lastUpdated,
-      },
+    const responseData: Partial<MarketData> & {
+      symbol: string;
+      baseAsset: string;
+      quoteAsset: string;
+      price: number;
+      change24h: number;
+      changePercent24h: number;
+      high24h: number;
+      low24h: number;
+      volume24h: number;
+      marketCap: number;
+      lastUpdated: string;
+    } = {
+      symbol: data.symbol,
+      baseAsset: data.baseAsset,
+      quoteAsset: data.quoteAsset,
+      price: data.price,
+      change24h: data.change24h,
+      changePercent24h: data.changePercent24h,
+      high24h: data.high24h,
+      low24h: data.low24h,
+      volume24h: data.volume24h,
+      marketCap: data.marketCap,
+      lastUpdated: data.lastUpdated,
     };
 
-    if (includeOrderBook) {
-      response.data.orderBook = data.orderBook;
+    if (includeOrderBook && data.orderBook) {
+      responseData.orderBook = data.orderBook;
     }
 
-    if (includeTrades) {
-      response.data.recentTrades = data.recentTrades;
+    if (includeTrades && data.recentTrades) {
+      responseData.recentTrades = data.recentTrades;
     }
 
-    if (data.priceHistory && data.priceHistory[timeframe]) {
-      response.data.priceHistory = data.priceHistory[timeframe];
+    if (data.priceHistory && data.priceHistory[timeframe as keyof typeof data.priceHistory]) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (responseData as any).priceHistory =
+        data.priceHistory[timeframe as keyof typeof data.priceHistory];
     }
+
+    const response = {
+      success: true,
+      data: responseData,
+    };
 
     return NextResponse.json(response);
   } catch (error) {

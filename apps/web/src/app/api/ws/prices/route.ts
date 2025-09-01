@@ -1,5 +1,14 @@
 import { NextRequest } from 'next/server';
 
+type PriceData = {
+  symbol: string;
+  price: number;
+  confidence: number;
+  lastUpdated: number;
+  source: string;
+  id: string;
+};
+
 // Pyth Network Price Feed IDs (Mainnet)
 const PYTH_PRICE_FEEDS = {
   'APT/USD': '0x03ae4db29ed4ae33d323568895aa00337e658e348b3750891cdc3294f7151687',
@@ -8,9 +17,9 @@ const PYTH_PRICE_FEEDS = {
 } as const;
 
 // Store price data and connections
-let priceData: Record<string, any> = {};
+const priceData: Record<string, PriceData> = {};
 let pythWs: WebSocket | null = null;
-let connections = new Set<WebSocket>();
+const connections = new Set<WebSocket>();
 
 // Initialize Pyth connection
 const initPythConnection = () => {
@@ -148,14 +157,6 @@ export async function GET(request: NextRequest) {
   // For WebSocket connections, return upgrade response
   // Note: In Next.js, WebSocket upgrades need to be handled differently
   // This is a simplified implementation
-  const response = new Response(null, {
-    status: 101,
-    headers: {
-      Upgrade: 'websocket',
-      Connection: 'Upgrade',
-      'Sec-WebSocket-Accept': request.headers.get('sec-websocket-key') || '',
-    },
-  });
 
   return new Response(
     JSON.stringify({

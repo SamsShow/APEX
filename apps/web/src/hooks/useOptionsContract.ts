@@ -32,14 +32,13 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
 
     try {
       const payload = {
-        data: {
-          function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::init_account`,
-          typeArguments: [],
-          functionArguments: [],
-        },
+        function: `${APEX_CONTRACT_CONFIG.address}::${APEX_CONTRACT_CONFIG.module}::init_account`,
+        typeArguments: [],
+        functionArguments: [],
       };
 
-      const response = await signAndSubmitTransaction(payload);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = await signAndSubmitTransaction(payload as any);
       console.log('Account initialized successfully:', response.hash);
 
       // Call success callback to refresh data
@@ -87,7 +86,8 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
           },
         };
 
-        const response = await signAndSubmitTransaction(payload);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const response = await signAndSubmitTransaction(payload as any);
         console.log(`Successfully created ${quantity} ${optionType} option(s):`, response.hash);
 
         // Call success callback to refresh data
@@ -130,7 +130,8 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
           },
         };
 
-        const response = await signAndSubmitTransaction(payload);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const response = await signAndSubmitTransaction(payload as any);
         console.log('Option cancelled successfully:', response.hash);
 
         // Call success callback to refresh data
@@ -192,7 +193,7 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
         setIsLoading(false);
       }
     },
-    [connected, account, signAndSubmitTransaction, onTransactionSuccess, handleTransactionError],
+    [connected, account, onTransactionSuccess, handleTransactionError],
   );
 
   // Exercise an option
@@ -215,7 +216,8 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
           },
         };
 
-        const response = await signAndSubmitTransaction(payload);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const response = await signAndSubmitTransaction(payload as any);
         console.log('Option exercised successfully:', response.hash);
 
         // Call success callback to refresh data
@@ -264,7 +266,8 @@ export function useOptionsContract(onTransactionSuccess?: () => void) {
           },
         };
 
-        const response = await signAndSubmitTransaction(payload);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const response = await signAndSubmitTransaction(payload as any);
         console.log('Series created successfully:', response.hash);
 
         // Call success callback to refresh data

@@ -8,13 +8,16 @@ export type DepthPoint = { x: number; y: number };
 
 export function Depth({ bids, asks }: { bids: DepthPoint[]; asks: DepthPoint[] }) {
   const { ref, size } = useResizeObserver<HTMLDivElement>();
-  const chartRef = React.useRef<{ remove: () => void } | null>(null);
+  const chartRef = React.useRef<{
+    remove: () => void;
+    resize: (width: number, height: number) => void;
+  } | null>(null);
 
   React.useEffect(() => {
     if (!ref.current) return;
     let mounted = true;
     (async () => {
-      const { createChart, ColorType } = await import('lightweight-charts');
+      const { createChart, ColorType, LineSeries } = await import('lightweight-charts');
       if (!mounted || !ref.current) return;
       const chart = createChart(ref.current, {
         width: ref.current.clientWidth,
@@ -30,20 +33,26 @@ export function Depth({ bids, asks }: { bids: DepthPoint[]; asks: DepthPoint[] }
         rightPriceScale: { borderVisible: false },
         timeScale: { visible: false, borderVisible: false },
       });
-      const bidsSeries = chart.addSeries('Line', {
+      const bidsSeries = chart.addSeries(LineSeries, {
         color: '#22c55e',
         lineWidth: 2,
         crosshairMarkerVisible: false,
         priceLineVisible: false,
       });
-      const asksSeries = chart.addSeries('Line', {
+      const asksSeries = chart.addSeries(LineSeries, {
         color: '#ef4444',
         lineWidth: 2,
         crosshairMarkerVisible: false,
         priceLineVisible: false,
       });
-      bidsSeries.setData(bids.map((p) => ({ time: p.x, value: p.y })));
-      asksSeries.setData(asks.map((p) => ({ time: p.x, value: p.y })));
+      bidsSeries.setData(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        bids.map((p, index) => ({ time: (index + 1) as unknown as any, value: p.y })),
+      );
+      asksSeries.setData(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        asks.map((p, index) => ({ time: (index + 1) as unknown as any, value: p.y })),
+      );
       chartRef.current = chart;
     })();
     return () => {

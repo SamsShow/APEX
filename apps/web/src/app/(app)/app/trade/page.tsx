@@ -10,23 +10,21 @@ import { HeatmapBook } from '@/components/trade/HeatmapBook';
 import { usePositions } from '@/hooks/usePositions';
 import { useOrders } from '@/hooks/useOrders';
 import { useOrderBookWebSocket } from '@/hooks/useWebSocket';
-import { useTradesWebSocket } from '@/hooks/useWebSocket';
 
 export default function TradePage() {
   const { refreshPositions } = usePositions();
   const { refreshOrders } = useOrders();
 
   // WebSocket connections for real-time data
-  const { orderBook, isConnected: orderBookConnected } = useOrderBookWebSocket('APT/USD');
-  const { trades, isConnected: tradesConnected } = useTradesWebSocket('APT/USD');
+  const { orderBook } = useOrderBookWebSocket('APT/USD');
 
   // Convert orderbook data for Depth component
-  const bids = orderBook.bids.map(([price, quantity], index) => ({
+  const bids = orderBook.bids.map(([, quantity], index) => ({
     x: index,
     y: quantity,
   }));
 
-  const asks = orderBook.asks.map(([price, quantity], index) => ({
+  const asks = orderBook.asks.map(([, quantity], index) => ({
     x: index,
     y: quantity,
   }));
