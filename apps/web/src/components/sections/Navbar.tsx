@@ -17,7 +17,12 @@ export function Navbar() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-3">
           <Logo className="h-7" />
-          <span className="text-sm font-jersey font-medium text-zinc-200/90">Apex</span>
+          <span
+            className="text-sm font-jersey-25 font-medium text-zinc-200/90"
+            style={{ fontFamily: 'Jersey 25, cursive' }}
+          >
+            Apex
+          </span>
         </div>
         <nav className="hidden gap-6 text-sm text-zinc-300 md:flex">
           <a className="hover:text-white" href="#features">

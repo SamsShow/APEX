@@ -77,7 +77,10 @@ export function AIFeatures() {
             <span>AI-Powered Trading</span>
           </div>
 
-          <h2 className="text-4xl md:text-6xl font-jersey font-bold text-white mb-6">
+          <h2
+            className="text-4xl md:text-6xl font-jersey-25 font-bold text-white mb-6"
+            style={{ fontFamily: 'Jersey 25, cursive' }}
+          >
             Intelligence That{' '}
             <span className="bg-gradient-to-r from-zinc-200 via-zinc-300 to-zinc-200 bg-clip-text text-transparent">
               Trades Smarter
@@ -115,7 +118,10 @@ export function AIFeatures() {
                   {feature.icon}
                 </motion.div>
 
-                <h3 className="text-xl font-jersey font-semibold text-white mb-3 group-hover:text-white transition-colors duration-300">
+                <h3
+                  className="text-xl font-jersey-25 font-semibold text-white mb-3 group-hover:text-white transition-colors duration-300"
+                  style={{ fontFamily: 'Jersey 25, cursive' }}
+                >
                   {feature.title}
                 </h3>
 

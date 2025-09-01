@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         jersey: ['Jersey 25', 'cursive'],
+        'jersey-25': ['Jersey 25', 'cursive'],
       },
       colors: {
         background: 'var(--background)',

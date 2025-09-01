@@ -24,7 +24,12 @@ const steps = [
 export function HowItWorks() {
   return (
     <section id="how" className="container py-16">
-      <h2 className="text-2xl font-jersey font-semibold text-white">How it works</h2>
+      <h2
+        className="text-2xl font-jersey-25 font-semibold text-white"
+        style={{ fontFamily: 'Jersey 25, cursive' }}
+      >
+        How it works
+      </h2>
       <p className="mt-2 max-w-2xl text-zinc-300">
         Apex leverages parallel execution and atomic settlement to remove execution risk while
         delivering hyper throughput on-chain.
@@ -53,7 +58,12 @@ export function HowItWorks() {
               {i + 1}
             </div>
 
-            <div className="text-sm font-jersey font-medium text-blue-300">{s.title}</div>
+            <div
+              className="text-sm font-jersey-25 font-medium text-blue-300"
+              style={{ fontFamily: 'Jersey 25, cursive' }}
+            >
+              {s.title}
+            </div>
             <div className="mt-2 text-zinc-200">{s.body}</div>
 
             {/* Decorative element */}

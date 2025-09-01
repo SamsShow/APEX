@@ -76,7 +76,10 @@ export function FeaturesShowcase() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-jersey font-bold text-white mb-6">
+          <h2
+            className="text-4xl md:text-5xl font-jersey-25 font-bold text-white mb-6"
+            style={{ fontFamily: 'Jersey 25, cursive' }}
+          >
             Why Choose{' '}
             <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               Apex
@@ -113,7 +116,10 @@ export function FeaturesShowcase() {
                   {feature.icon}
                 </motion.div>
 
-                <h3 className="text-xl font-jersey font-semibold text-white mb-2 group-hover:text-zinc-200 transition-colors duration-300">
+                <h3
+                  className="text-xl font-jersey-25 font-semibold text-white mb-2 group-hover:text-zinc-200 transition-colors duration-300"
+                  style={{ fontFamily: 'Jersey 25, cursive' }}
+                >
                   {feature.title}
                 </h3>
 

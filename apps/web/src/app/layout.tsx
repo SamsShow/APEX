@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import '@fontsource/jersey-25';
 import { WalletProvider } from '@/components/providers/WalletProvider';
 import { NotificationProvider } from '@/hooks/useNotifications';
 import { NotificationContainer } from '@/components/ui/notification-container';

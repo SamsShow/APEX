@@ -117,7 +117,8 @@ export function BentoGrid() {
             </div>
 
             <motion.div
-              className="text-xl font-jersey font-semibold text-white mb-2"
+              className="text-xl font-jersey-25 font-semibold text-white mb-2"
+              style={{ fontFamily: 'Jersey 25, cursive' }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 + 0.3, duration: 0.5 }}
