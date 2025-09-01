@@ -1,10 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BarChart3, TrendingUp, Activity, Target, Play } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { BarChart3, TrendingUp, Activity, Target, Play, Brain, AlertTriangle } from 'lucide-react';
+import { SentimentAnalysisDashboard } from '@/components/ai/SentimentAnalysisDashboard';
+import { AIRiskAssessmentDashboard } from '@/components/ai/AIRiskAssessmentDashboard';
+import { AnomalyDetectionDashboard } from '@/components/ai/AnomalyDetectionDashboard';
 
 // Mock analytics data
 const analyticsData = {
@@ -27,6 +31,8 @@ const analyticsData = {
 };
 
 export default function DemoAnalyticsPage() {
+  const [activeTab, setActiveTab] = useState('overview');
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -39,118 +45,270 @@ export default function DemoAnalyticsPage() {
           <Play className="w-4 h-4 text-green-400" />
           <span className="text-green-400 font-medium">Analytics Demo Active</span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Performance Analytics</h1>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-4">
+          <Brain className="w-4 h-4 text-blue-400" />
+          <span className="text-blue-400 font-medium">AI Features Enabled</span>
+        </div>
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">AI-Powered Analytics</h1>
         <p className="text-zinc-400 max-w-2xl mx-auto">
-          Comprehensive analytics dashboard with real-time performance tracking and risk metrics.
+          Comprehensive analytics dashboard with AI-powered insights, real-time performance
+          tracking, and advanced risk metrics.
         </p>
       </motion.div>
 
-      {/* Key Metrics */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
-      >
-        {[
-          {
-            label: 'Total Return',
-            value: `$${analyticsData.performance.totalReturn.toFixed(2)}`,
-            icon: TrendingUp,
-            color: 'text-green-400',
-          },
-          {
-            label: 'Annualized',
-            value: `${analyticsData.performance.annualizedReturn.toFixed(1)}%`,
-            icon: Activity,
-            color: 'text-blue-400',
-          },
-          {
-            label: 'Sharpe Ratio',
-            value: analyticsData.performance.sharpeRatio.toFixed(2),
-            icon: Target,
-            color: 'text-purple-400',
-          },
-          {
-            label: 'Max Drawdown',
-            value: `${analyticsData.performance.maxDrawdown}%`,
-            icon: TrendingUp,
-            color: 'text-red-400',
-          },
-          {
-            label: 'Win Rate',
-            value: `${analyticsData.performance.winRate}%`,
-            icon: Target,
-            color: 'text-green-400',
-          },
-          {
-            label: 'Total Trades',
-            value: analyticsData.performance.totalTrades.toString(),
-            icon: BarChart3,
-            color: 'text-zinc-400',
-          },
-        ].map((metric, index) => (
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-5 bg-zinc-900/50 border border-zinc-700">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-zinc-800">
+            <BarChart3 className="w-4 h-4 mr-2" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="sentiment" className="data-[state=active]:bg-zinc-800">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            AI Sentiment
+          </TabsTrigger>
+          <TabsTrigger value="risk" className="data-[state=active]:bg-zinc-800">
+            <AlertTriangle className="w-4 h-4 mr-2" />
+            AI Risk
+          </TabsTrigger>
+          <TabsTrigger value="anomalies" className="data-[state=active]:bg-zinc-800">
+            <Brain className="w-4 h-4 mr-2" />
+            Anomalies
+          </TabsTrigger>
+          <TabsTrigger value="performance" className="data-[state=active]:bg-zinc-800">
+            Performance
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="mt-8">
+          {/* Key Metrics */}
           <motion.div
-            key={metric.label}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 + index * 0.1 }}
-            className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
           >
-            <metric.icon className={`w-6 h-6 ${metric.color} mx-auto mb-2`} />
-            <div className="text-lg font-bold text-white mb-1">{metric.value}</div>
-            <div className="text-xs text-zinc-400">{metric.label}</div>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Performance Chart */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        <Card className="bg-zinc-900/50 border-zinc-800 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Monthly Returns</h2>
-            <Badge variant="secondary" className="bg-green-400/10 text-green-400">
-              +67.3% YTD
-            </Badge>
-          </div>
-
-          {/* Chart Placeholder */}
-          <div className="h-64 bg-zinc-800/20 rounded-lg border border-zinc-700 flex items-center justify-center mb-6">
-            <div className="text-center">
-              <BarChart3 className="w-12 h-12 text-zinc-500 mx-auto mb-3" />
-              <div className="text-zinc-400">Interactive performance chart would be here</div>
-              <div className="text-sm text-zinc-500">Monthly returns with benchmarks</div>
-            </div>
-          </div>
-
-          {/* Monthly Data */}
-          <div className="grid grid-cols-3 gap-4">
-            {analyticsData.monthlyReturns.map((month, index) => (
+            {[
+              {
+                label: 'Total Return',
+                value: `$${analyticsData.performance.totalReturn.toFixed(2)}`,
+                icon: TrendingUp,
+                color: 'text-green-400',
+              },
+              {
+                label: 'Annualized',
+                value: `${analyticsData.performance.annualizedReturn.toFixed(1)}%`,
+                icon: Activity,
+                color: 'text-blue-400',
+              },
+              {
+                label: 'Sharpe Ratio',
+                value: analyticsData.performance.sharpeRatio.toFixed(2),
+                icon: Target,
+                color: 'text-purple-400',
+              },
+              {
+                label: 'Max Drawdown',
+                value: `${analyticsData.performance.maxDrawdown}%`,
+                icon: TrendingUp,
+                color: 'text-red-400',
+              },
+              {
+                label: 'Win Rate',
+                value: `${analyticsData.performance.winRate}%`,
+                icon: Target,
+                color: 'text-green-400',
+              },
+              {
+                label: 'Total Trades',
+                value: analyticsData.performance.totalTrades.toString(),
+                icon: BarChart3,
+                color: 'text-zinc-400',
+              },
+            ].map((metric, index) => (
               <motion.div
-                key={month.month}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
-                className="text-center p-3 bg-zinc-800/30 rounded-lg"
+                key={metric.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
+                className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 text-center"
               >
-                <div className="text-sm font-medium text-white mb-1">{month.month}</div>
-                <div
-                  className={`text-lg font-bold ${
-                    month.return >= 0 ? 'text-green-400' : 'text-red-400'
-                  }`}
-                >
-                  {month.return >= 0 ? '+' : ''}
-                  {month.return}%
-                </div>
+                <metric.icon className={`w-6 h-6 ${metric.color} mx-auto mb-2`} />
+                <div className="text-lg font-bold text-white mb-1">{metric.value}</div>
+                <div className="text-xs text-zinc-400">{metric.label}</div>
               </motion.div>
             ))}
-          </div>
-        </Card>
-      </motion.div>
+          </motion.div>
+
+          {/* Performance Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="bg-zinc-900/50 border-zinc-800 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-white">Monthly Returns</h2>
+                <Badge variant="secondary" className="bg-green-400/10 text-green-400">
+                  +67.3% YTD
+                </Badge>
+              </div>
+
+              {/* Chart Placeholder */}
+              <div className="h-64 bg-zinc-800/20 rounded-lg border border-zinc-700 flex items-center justify-center mb-6">
+                <div className="text-center">
+                  <BarChart3 className="w-12 h-12 text-zinc-500 mx-auto mb-3" />
+                  <div className="text-zinc-400">Interactive performance chart would be here</div>
+                  <div className="text-sm text-zinc-500">Monthly returns with benchmarks</div>
+                </div>
+              </div>
+
+              {/* Monthly Data */}
+              <div className="grid grid-cols-3 gap-4">
+                {analyticsData.monthlyReturns.map((month, index) => (
+                  <motion.div
+                    key={month.month}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    className="text-center p-3 bg-zinc-800/30 rounded-lg"
+                  >
+                    <div className="text-sm font-medium text-white mb-1">{month.month}</div>
+                    <div
+                      className={`text-lg font-bold ${
+                        month.return >= 0 ? 'text-green-400' : 'text-red-400'
+                      }`}
+                    >
+                      {month.return >= 0 ? '+' : ''}
+                      {month.return}%
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </Card>
+          </motion.div>
+        </TabsContent>
+
+        <TabsContent value="sentiment" className="mt-8">
+          <SentimentAnalysisDashboard />
+        </TabsContent>
+
+        <TabsContent value="risk" className="mt-8">
+          <AIRiskAssessmentDashboard />
+        </TabsContent>
+
+        <TabsContent value="anomalies" className="mt-8">
+          <AnomalyDetectionDashboard />
+        </TabsContent>
+
+        <TabsContent value="performance" className="mt-8">
+          {/* Key Metrics */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+          >
+            {[
+              {
+                label: 'Total Return',
+                value: `$${analyticsData.performance.totalReturn.toFixed(2)}`,
+                icon: TrendingUp,
+                color: 'text-green-400',
+              },
+              {
+                label: 'Annualized',
+                value: `${analyticsData.performance.annualizedReturn.toFixed(1)}%`,
+                icon: Activity,
+                color: 'text-blue-400',
+              },
+              {
+                label: 'Sharpe Ratio',
+                value: analyticsData.performance.sharpeRatio.toFixed(2),
+                icon: Target,
+                color: 'text-purple-400',
+              },
+              {
+                label: 'Max Drawdown',
+                value: `${analyticsData.performance.maxDrawdown}%`,
+                icon: TrendingUp,
+                color: 'text-red-400',
+              },
+              {
+                label: 'Win Rate',
+                value: `${analyticsData.performance.winRate}%`,
+                icon: Target,
+                color: 'text-green-400',
+              },
+              {
+                label: 'Total Trades',
+                value: analyticsData.performance.totalTrades.toString(),
+                icon: BarChart3,
+                color: 'text-zinc-400',
+              },
+            ].map((metric, index) => (
+              <motion.div
+                key={metric.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
+                className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 text-center"
+              >
+                <metric.icon className={`w-6 h-6 ${metric.color} mx-auto mb-2`} />
+                <div className="text-lg font-bold text-white mb-1">{metric.value}</div>
+                <div className="text-xs text-zinc-400">{metric.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Performance Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="bg-zinc-900/50 border-zinc-800 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-white">Monthly Returns</h2>
+                <Badge variant="secondary" className="bg-green-400/10 text-green-400">
+                  +67.3% YTD
+                </Badge>
+              </div>
+
+              {/* Chart Placeholder */}
+              <div className="h-64 bg-zinc-800/20 rounded-lg border border-zinc-700 flex items-center justify-center mb-6">
+                <div className="text-center">
+                  <BarChart3 className="w-12 h-12 text-zinc-500 mx-auto mb-3" />
+                  <div className="text-zinc-400">Interactive performance chart would be here</div>
+                  <div className="text-sm text-zinc-500">Monthly returns with benchmarks</div>
+                </div>
+              </div>
+
+              {/* Monthly Data */}
+              <div className="grid grid-cols-3 gap-4">
+                {analyticsData.monthlyReturns.map((month, index) => (
+                  <motion.div
+                    key={month.month}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    className="text-center p-3 bg-zinc-800/30 rounded-lg"
+                  >
+                    <div className="text-sm font-medium text-white mb-1">{month.month}</div>
+                    <div
+                      className={`text-lg font-bold ${
+                        month.return >= 0 ? 'text-green-400' : 'text-red-400'
+                      }`}
+                    >
+                      {month.return >= 0 ? '+' : ''}
+                      {month.return}%
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </Card>
+          </motion.div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

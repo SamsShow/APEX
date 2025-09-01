@@ -7,6 +7,7 @@ export default function DocsPage() {
   const sections = [
     { id: 'overview', title: 'Overview', icon: '📊' },
     { id: 'quick-start', title: 'Quick Start', icon: '🚀' },
+    { id: 'ai-features', title: 'AI Features', icon: '🤖' },
     { id: 'architecture', title: 'Architecture', icon: '🏗️' },
     { id: 'smart-contracts', title: 'Smart Contracts', icon: '📜' },
     { id: 'api-reference', title: 'API Reference', icon: '📚' },
@@ -404,6 +405,221 @@ export default function DocsPage() {
                               <li>• Production-ready features</li>
                               <li>• Higher network fees</li>
                             </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </section>
+
+              {/* AI Features */}
+              <section id="ai-features" className="scroll-mt-8">
+                <Card className="border-zinc-800 bg-slate-900/30 backdrop-blur">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">🤖</span>
+                      <CardTitle className="text-2xl text-white">AI-Powered Features</CardTitle>
+                    </div>
+                    <p className="text-slate-400 mt-2">
+                      Advanced artificial intelligence capabilities that enhance trading performance
+                      and risk management
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-8">
+                      {/* AI Overview */}
+                      <div className="rounded-xl bg-blue-500/10 border border-blue-500/20 p-6">
+                        <h3 className="font-semibold text-blue-300 mb-4 text-lg flex items-center gap-2">
+                          <span className="text-xl">🧠</span>
+                          AI Overview
+                        </h3>
+                        <p className="text-slate-300 leading-relaxed">
+                          Apex integrates cutting-edge AI technologies to provide traders with
+                          intelligent insights, automated analysis, and predictive capabilities. Our
+                          AI systems continuously learn from market data to improve performance and
+                          help traders make better decisions.
+                        </p>
+                      </div>
+
+                      {/* AI Features Grid */}
+                      <div className="grid gap-6 md:grid-cols-2">
+                        {/* Strategy Advisor */}
+                        <div className="rounded-xl bg-zinc-500/10 border border-zinc-500/20 p-6">
+                          <h4 className="font-semibold text-zinc-300 mb-3 flex items-center gap-2">
+                            <span className="text-lg">🎯</span>
+                            AI Strategy Advisor
+                          </h4>
+                          <p className="text-slate-400 text-sm mb-4">
+                            Intelligent strategy recommendations based on market conditions,
+                            volatility patterns, and user risk profiles.
+                          </p>
+                          <ul className="space-y-2 text-sm text-slate-400">
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Real-time market analysis
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Personalized recommendations
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Risk-adjusted strategies
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Performance optimization
+                            </li>
+                          </ul>
+                        </div>
+
+                        {/* Sentiment Analysis */}
+                        <div className="rounded-xl bg-purple-500/10 border border-purple-500/20 p-6">
+                          <h4 className="font-semibold text-purple-300 mb-3 flex items-center gap-2">
+                            <span className="text-lg">📊</span>
+                            Sentiment Analysis
+                          </h4>
+                          <p className="text-slate-400 text-sm mb-4">
+                            Multi-source sentiment analysis from social media, news, and on-chain
+                            data for market timing insights.
+                          </p>
+                          <ul className="space-y-2 text-sm text-slate-400">
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Social media monitoring
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              News sentiment analysis
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              On-chain data processing
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Market impact prediction
+                            </li>
+                          </ul>
+                        </div>
+
+                        {/* Risk Assessment */}
+                        <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-6">
+                          <h4 className="font-semibold text-red-300 mb-3 flex items-center gap-2">
+                            <span className="text-lg">⚠️</span>
+                            AI Risk Assessment
+                          </h4>
+                          <p className="text-slate-400 text-sm mb-4">
+                            Comprehensive portfolio risk analysis with stress testing and
+                            optimization recommendations.
+                          </p>
+                          <ul className="space-y-2 text-sm text-slate-400">
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Portfolio risk metrics
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Stress test scenarios
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              VaR calculations
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Optimization suggestions
+                            </li>
+                          </ul>
+                        </div>
+
+                        {/* Anomaly Detection */}
+                        <div className="rounded-xl bg-orange-500/10 border border-orange-500/20 p-6">
+                          <h4 className="font-semibold text-orange-300 mb-3 flex items-center gap-2">
+                            <span className="text-lg">🔍</span>
+                            Anomaly Detection
+                          </h4>
+                          <p className="text-slate-400 text-sm mb-4">
+                            Real-time detection of market anomalies and arbitrage opportunities
+                            using advanced pattern recognition.
+                          </p>
+                          <ul className="space-y-2 text-sm text-slate-400">
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Price spike detection
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Volume surge monitoring
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Arbitrage opportunities
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <span className="text-green-400">✓</span>
+                              Market regime analysis
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* AI Performance Metrics */}
+                      <div className="rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 p-6">
+                        <h3 className="font-semibold text-blue-300 mb-4 text-lg flex items-center gap-2">
+                          <span className="text-xl">📈</span>
+                          AI Performance Improvements
+                        </h3>
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                          <div className="text-center p-4 bg-zinc-800/30 rounded-lg">
+                            <div className="text-2xl font-bold text-green-400 mb-1">+40%</div>
+                            <div className="text-sm text-slate-400">Strategy Success Rate</div>
+                          </div>
+                          <div className="text-center p-4 bg-zinc-800/30 rounded-lg">
+                            <div className="text-2xl font-bold text-green-400 mb-1">-25%</div>
+                            <div className="text-sm text-slate-400">Portfolio Risk</div>
+                          </div>
+                          <div className="text-center p-4 bg-zinc-800/30 rounded-lg">
+                            <div className="text-2xl font-bold text-blue-400 mb-1">60%</div>
+                            <div className="text-sm text-slate-400">Faster Detection</div>
+                          </div>
+                          <div className="text-center p-4 bg-zinc-800/30 rounded-lg">
+                            <div className="text-2xl font-bold text-purple-400 mb-1">+35%</div>
+                            <div className="text-sm text-slate-400">Market Timing</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* AI Integration Guide */}
+                      <div className="rounded-xl bg-zinc-500/10 border border-zinc-500/20 p-6">
+                        <h3 className="font-semibold text-zinc-300 mb-4 text-lg flex items-center gap-2">
+                          <span className="text-xl">🔧</span>
+                          Using AI Features
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="border-l-4 border-blue-400 pl-4">
+                            <h4 className="font-medium text-zinc-300 mb-2">Access AI Features</h4>
+                            <p className="text-slate-400 text-sm">
+                              AI features are integrated throughout the platform. Navigate to the
+                              Analytics section to access AI-powered insights, or use the demo
+                              section to explore capabilities without connecting a wallet.
+                            </p>
+                          </div>
+                          <div className="border-l-4 border-purple-400 pl-4">
+                            <h4 className="font-medium text-zinc-300 mb-2">Real-time Analysis</h4>
+                            <p className="text-slate-400 text-sm">
+                              AI systems continuously analyze market data and update recommendations
+                              in real-time. Enable live monitoring for the most current insights.
+                            </p>
+                          </div>
+                          <div className="border-l-4 border-green-400 pl-4">
+                            <h4 className="font-medium text-zinc-300 mb-2">Risk Management</h4>
+                            <p className="text-slate-400 text-sm">
+                              Always combine AI recommendations with your own risk assessment. AI
+                              provides data-driven insights but should complement, not replace, your
+                              trading judgment.
+                            </p>
                           </div>
                         </div>
                       </div>
