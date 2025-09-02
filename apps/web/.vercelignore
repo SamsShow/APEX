@@ -1,0 +1,18 @@
+# Ignore monorepo files
+../**
+../../**
+
+# Keep only the web app files
+!src/**
+!public/**
+!package.json
+!next.config.mjs
+!tailwind.config.ts
+!postcss.config.mjs
+!tsconfig.json
+!jest.config.js
+!next-env.d.ts
+
+# Ignore build outputs except .next
+.next/**
+!.next/**
