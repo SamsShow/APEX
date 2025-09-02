@@ -1,8 +1,5 @@
 {
-  "rootDirectory": "apps/web",
-  "buildCommand": "pnpm build",
-  "installCommand": "pnpm install",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
-  "ignoreCommand": "npx --no -- turbo-ignore"
+  "buildCommand": "cd apps/web && pnpm install && pnpm build",
+  "outputDirectory": "apps/web/.next",
+  "framework": "nextjs"
 }
