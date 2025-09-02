@@ -1,5 +1,62 @@
 # Deployment Troubleshooting Guide
 
+## Function Runtime Issues
+
+### Error: Function Runtimes must have a valid version, for example `now-php@1.0.0`.
+
+**Symptoms:**
+
+- Vercel deployment fails with runtime version error
+- Functions configuration causing deployment issues
+- Build succeeds locally but fails on Vercel
+
+**Root Causes:**
+
+1. **Incorrect Runtime Specification**: Missing version number in runtime configuration
+2. **Unnecessary Function Configuration**: Next.js handles API routes automatically
+3. **Outdated Runtime Syntax**: Using deprecated runtime format
+
+**Solutions:**
+
+#### 1. Remove Unnecessary Functions Configuration
+
+```json
+// ❌ DON'T DO THIS - Causes runtime errors
+{
+  "functions": {
+    "apps/web/src/app/api/**/*.ts": {
+      "runtime": "@vercel/node"  // Missing version!
+    }
+  }
+}
+
+// ✅ DO THIS - Let Next.js handle API routes automatically
+{
+  "buildCommand": "cd ../.. && pnpm build",
+  "outputDirectory": "apps/web/.next",
+  "framework": "nextjs"
+}
+```
+
+#### 2. If Custom Runtime is Required
+
+```json
+// Only use this if you need custom runtime configuration
+{
+  "functions": {
+    "apps/web/src/app/api/**/*.ts": {
+      "runtime": "@vercel/node@18" // Include version number
+    }
+  }
+}
+```
+
+**Prevention:**
+
+- Next.js App Router handles API routes automatically
+- Only specify custom runtimes when absolutely necessary
+- Test deployments after configuration changes
+
 ## Client Reference Manifest Issues
 
 ### Error: ENOENT: no such file or directory, lstat '/vercel/path0/apps/web/.next/server/app/(app)/page_client-reference-manifest.js'
