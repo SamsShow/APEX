@@ -261,9 +261,37 @@ ls -la apps/web/.next/routes-manifest.json
 ls -la apps/web/.next/server/
 ```
 
+#### 4. Fix Vercel Double Path Issue (Alternative)
+
+```json
+// vercel.json - Alternative configuration for double path issues
+{
+  "buildCommand": "cd ../.. && pnpm build --filter=web",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "installCommand": "cd ../.. && pnpm install"
+}
+```
+
+```bash
+# .vercelignore - Prevent monorepo file conflicts
+# Ignore monorepo files
+../**
+../../**
+
+# Keep only the web app files
+!src/**
+!public/**
+!package.json
+!next.config.mjs
+```
+
 **Prevention:**
 
 - Ensure turbo.json includes all build outputs
 - Clean cache before deployments
+- Use filtered builds (`--filter=web`) for monorepos
+- Set outputDirectory to `.next` (not `apps/web/.next`) in Vercel
+- Add .vercelignore to prevent path conflicts
 - Verify build outputs exist locally before pushing
 - Keep monorepo path configurations consistent
