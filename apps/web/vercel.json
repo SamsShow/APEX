@@ -2,10 +2,5 @@
   "buildCommand": "cd ../.. && pnpm build --filter=web",
   "outputDirectory": "apps/web/.next",
   "framework": "nextjs",
-  "installCommand": "cd ../.. && pnpm install",
-  "functions": {
-    "apps/web/src/app/api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
+  "installCommand": "cd ../.. && pnpm install"
 }
