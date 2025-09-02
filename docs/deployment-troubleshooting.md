@@ -210,3 +210,60 @@ pnpm build 2>&1 | grep -i error
 - Check browser console for runtime errors
 - Monitor Core Web Vitals in Vercel analytics
 - Set up error tracking with services like Sentry
+
+## Routes Manifest Issues
+
+### Error: The file "/vercel/path0/apps/web/apps/web/.next/routes-manifest.json" couldn't be found
+
+**Symptoms:**
+
+- Vercel deployment fails with routes-manifest.json not found
+- Build succeeds locally but fails on Vercel
+- Double path issues (apps/web/apps/web/) in error messages
+- Monorepo build output path confusion
+
+**Root Causes:**
+
+1. **Turbo Configuration Mismatch**: `turbo.json` outputs don't include `.next/**`
+2. **Build Cache Conflicts**: Stale cache preventing proper file generation
+3. **Monorepo Path Resolution**: Incorrect path mapping in Vercel
+
+**Solutions:**
+
+#### 1. Fix Turbo Build Outputs
+
+```json
+// turbo.json - Include Next.js build outputs
+{
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    }
+  }
+}
+```
+
+#### 2. Clean Build Cache
+
+```bash
+# Remove stale cache and rebuild
+rm -rf apps/web/.next
+rm -rf node_modules/.cache
+pnpm build
+```
+
+#### 3. Verify Build Outputs
+
+```bash
+# Check that required files exist
+ls -la apps/web/.next/routes-manifest.json
+ls -la apps/web/.next/server/
+```
+
+**Prevention:**
+
+- Ensure turbo.json includes all build outputs
+- Clean cache before deployments
+- Verify build outputs exist locally before pushing
+- Keep monorepo path configurations consistent
