@@ -15,7 +15,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write .",
     "release": "changeset version && pnpm install --no-frozen-lockfile && changeset publish",
-    "prepare": "husky install",
+    "prepare": "command -v husky >/dev/null 2>&1 && husky install || echo 'husky not installed - skipping'",
     "ci:verify": "pnpm lint && pnpm build && pnpm test"
   },
   "devDependencies": {
