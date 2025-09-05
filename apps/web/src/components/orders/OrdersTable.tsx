@@ -9,7 +9,7 @@ export function OrdersTable() {
 
   if (isLoading) {
     return (
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/30">
+      <div className="overflow-hidden rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 backdrop-blur-sm metallic-texture">
         <div className="p-8 text-center text-zinc-400">Loading orders...</div>
       </div>
     );
@@ -17,7 +17,7 @@ export function OrdersTable() {
 
   if (error) {
     return (
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/30">
+      <div className="overflow-hidden rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 backdrop-blur-sm metallic-texture">
         <div className="p-8 text-center text-red-400">
           Error loading orders: {error}
           <button
@@ -33,7 +33,7 @@ export function OrdersTable() {
 
   if (orders.length === 0) {
     return (
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/30">
+      <div className="overflow-hidden rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 backdrop-blur-sm metallic-texture">
         <div className="p-8 text-center text-zinc-400">
           No orders found. Create some options to see your order history here.
         </div>

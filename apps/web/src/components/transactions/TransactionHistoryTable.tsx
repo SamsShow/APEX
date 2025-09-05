@@ -92,11 +92,11 @@ export function TransactionHistoryTable({
     <div className="space-y-6">
       {showStats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-zinc-900/50 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 p-4 rounded-lg border border-zinc-800 backdrop-blur-sm metallic-texture">
             <div className="text-sm text-zinc-400">Total Transactions</div>
             <div className="text-2xl font-bold">{stats.totalTransactions}</div>
           </div>
-          <div className="bg-zinc-900/50 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 p-4 rounded-lg border border-zinc-800 backdrop-blur-sm metallic-texture">
             <div className="text-sm text-zinc-400">Success Rate</div>
             <div className="text-2xl font-bold text-green-400">
               {stats.totalTransactions > 0
@@ -104,11 +104,11 @@ export function TransactionHistoryTable({
                 : '0%'}
             </div>
           </div>
-          <div className="bg-zinc-900/50 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 p-4 rounded-lg border border-zinc-800 backdrop-blur-sm metallic-texture">
             <div className="text-sm text-zinc-400">Total Gas Spent</div>
             <div className="text-2xl font-bold">{stats.totalGasSpent.toFixed(4)} APT</div>
           </div>
-          <div className="bg-zinc-900/50 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 p-4 rounded-lg border border-zinc-800 backdrop-blur-sm metallic-texture">
             <div className="text-sm text-zinc-400">Total Volume</div>
             <div className="text-2xl font-bold">${stats.totalVolume.toFixed(2)}</div>
           </div>
@@ -153,7 +153,7 @@ export function TransactionHistoryTable({
         </div>
       )}
 
-      <div className="bg-zinc-900/50 rounded-lg overflow-hidden">
+      <div className="bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 rounded-lg overflow-hidden border border-zinc-800 backdrop-blur-sm metallic-texture">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-zinc-800/50">

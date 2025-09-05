@@ -13,7 +13,7 @@ export function AptPriceTicker() {
   const changePercent = price ? '+2.94%' : '—';
 
   return (
-    <div className="flex items-center justify-between rounded-lg border border-zinc-800/50 bg-zinc-900/50 px-3 py-1.5">
+    <div className="flex items-center justify-between rounded-lg border border-zinc-800 bg-gradient-to-r from-zinc-900/80 to-zinc-900/60 px-3 py-1.5 backdrop-blur-sm metallic-texture">
       <div className="flex items-center gap-2">
         <div
           className={`h-1.5 w-1.5 rounded-full ${

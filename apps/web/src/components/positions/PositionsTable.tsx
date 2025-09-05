@@ -19,7 +19,7 @@ export function PositionsTable() {
 
   if (isLoading) {
     return (
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/30">
+      <div className="overflow-hidden rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 backdrop-blur-sm metallic-texture">
         <div className="p-8 text-center text-zinc-400">Loading positions...</div>
       </div>
     );
@@ -27,7 +27,7 @@ export function PositionsTable() {
 
   if (error) {
     return (
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/30">
+      <div className="overflow-hidden rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 backdrop-blur-sm metallic-texture">
         <div className="p-8 text-center text-red-400">
           Error loading positions: {error}
           <Button onClick={refreshPositions} variant="outline" size="sm" className="ml-4">
@@ -132,7 +132,7 @@ export function PositionsTable() {
 
   if (sortedPositions.length === 0) {
     return (
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/30">
+      <div className="overflow-hidden rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 backdrop-blur-sm metallic-texture">
         <div className="p-8 text-center text-zinc-400">
           No positions found. Create some options to see them here.
         </div>
@@ -161,7 +161,7 @@ export function PositionsTable() {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/30">
+      <div className="overflow-hidden rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 backdrop-blur-sm metallic-texture">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

@@ -9,7 +9,7 @@ export function MarketsSnapshot() {
     <div className="grid gap-4 md:grid-cols-2">
       <div className="space-y-3">
         <AptPriceTicker />
-        <div className="rounded-lg border border-white/10 bg-black/30 p-3">
+        <div className="rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 p-3 backdrop-blur-sm metallic-texture">
           <div className="mb-2 text-sm font-semibold text-zinc-200">Top Movers</div>
           <div className="space-y-1 text-sm">
             {TOP_MOVERS.map((m) => (
@@ -24,7 +24,7 @@ export function MarketsSnapshot() {
           </div>
         </div>
       </div>
-      <div className="rounded-lg border border-white/10 bg-black/30 p-3">
+      <div className="rounded-lg border border-zinc-800 bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-zinc-900/40 p-3 backdrop-blur-sm metallic-card">
         <div className="mb-2 text-sm font-semibold text-zinc-200">Market Feed</div>
         <div className="space-y-2 text-sm text-zinc-300">
           {MARKET_FEED.map((e) => (
