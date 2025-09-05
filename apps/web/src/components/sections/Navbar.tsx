@@ -36,8 +36,8 @@ export function Navbar() {
           </a>
         </nav>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" className="hidden md:inline-flex">
-            Docs
+          <Button variant="ghost" className="hidden md:inline-flex" asChild>
+            <a href="/docs">Docs</a>
           </Button>
           <ConnectWalletButton />
         </div>
