@@ -5,6 +5,7 @@ import '@fontsource/jersey-25';
 import { WalletProvider } from '@/components/providers/WalletProvider';
 import { NotificationProvider } from '@/hooks/useNotifications';
 import { NotificationContainer } from '@/components/ui/notification-container';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -39,12 +40,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <WalletProvider>
-          <NotificationProvider>
-            {children}
-            <NotificationContainer />
-          </NotificationProvider>
-        </WalletProvider>
+        <ErrorBoundary
+          onError={(error, errorInfo) => {
+            // Log to external service in production
+            console.error('Global Error Boundary:', error, errorInfo);
+          }}
+        >
+          <WalletProvider>
+            <NotificationProvider>
+              {children}
+              <NotificationContainer />
+            </NotificationProvider>
+          </WalletProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
