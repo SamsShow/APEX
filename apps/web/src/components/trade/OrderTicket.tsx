@@ -14,6 +14,13 @@ import { TransactionDialog } from '@/components/ui/transaction-dialog';
 import { useOptionsContract } from '@/hooks/useOptionsContract';
 import { useNotifications } from '@/hooks/useNotifications';
 import { OptionType, APEX_CONTRACT_CONFIG } from '@/lib/shared-types';
+import {
+  validateStrikePrice,
+  validateQuantity,
+  validateCreateOption,
+  sanitizeNumber,
+  sanitizeString,
+} from '@/lib/validation';
 
 interface OrderTicketProps {
   onPositionUpdate?: () => void;
@@ -34,6 +41,10 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
   const [optionType, setOptionType] = useState<OptionType>('call');
   const [expiryDays, setExpiryDays] = useState('30');
 
+  // Validation state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isValidating, setIsValidating] = useState(false);
+
   // Transaction confirmation dialog state
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [pendingTransaction, setPendingTransaction] = useState<{
@@ -43,28 +54,114 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
     expirySeconds: number;
   } | null>(null);
 
-  const handleSubmit = () => {
+  // Validation functions
+  const validateForm = async () => {
+    setIsValidating(true);
+    const errors: Record<string, string> = {};
+
+    // Sanitize inputs
+    const sanitizedStrike = sanitizeNumber(strikePrice);
+    const sanitizedQuantity = sanitizeNumber(quantity);
+    const sanitizedExpiryDays = sanitizeNumber(expiryDays);
+
+    // Validate strike price
+    if (sanitizedStrike === null) {
+      errors.strikePrice = 'Strike price must be a valid number';
+    } else {
+      const strikeValidation = validateStrikePrice(sanitizedStrike);
+      if (!strikeValidation.success) {
+        errors.strikePrice = strikeValidation.errors?.[0] || 'Invalid strike price';
+      }
+    }
+
+    // Validate quantity
+    if (sanitizedQuantity === null) {
+      errors.quantity = 'Quantity must be a valid number';
+    } else {
+      const quantityValidation = validateQuantity(sanitizedQuantity);
+      if (!quantityValidation.success) {
+        errors.quantity = quantityValidation.errors?.[0] || 'Invalid quantity';
+      }
+    }
+
+    // Validate expiry days
+    if (sanitizedExpiryDays === null) {
+      errors.expiryDays = 'Expiry days must be a valid number';
+    } else if (sanitizedExpiryDays <= 0) {
+      errors.expiryDays = 'Expiry days must be greater than 0';
+    } else if (sanitizedExpiryDays > 365) {
+      errors.expiryDays = 'Expiry days cannot exceed 365';
+    }
+
+    setValidationErrors(errors);
+    setIsValidating(false);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Validate individual fields on blur
+  const validateField = (fieldName: string, value: string) => {
+    const errors = { ...validationErrors };
+
+    switch (fieldName) {
+      case 'strikePrice':
+        const sanitizedStrike = sanitizeNumber(value);
+        if (sanitizedStrike === null) {
+          errors.strikePrice = 'Strike price must be a valid number';
+        } else {
+          const strikeValidation = validateStrikePrice(sanitizedStrike);
+          if (!strikeValidation.success) {
+            errors.strikePrice = strikeValidation.errors?.[0] || 'Invalid strike price';
+          } else {
+            delete errors.strikePrice;
+          }
+        }
+        break;
+
+      case 'quantity':
+        const sanitizedQuantity = sanitizeNumber(value);
+        if (sanitizedQuantity === null) {
+          errors.quantity = 'Quantity must be a valid number';
+        } else {
+          const quantityValidation = validateQuantity(sanitizedQuantity);
+          if (!quantityValidation.success) {
+            errors.quantity = quantityValidation.errors?.[0] || 'Invalid quantity';
+          } else {
+            delete errors.quantity;
+          }
+        }
+        break;
+    }
+
+    setValidationErrors(errors);
+  };
+
+  const handleSubmit = async () => {
     if (!strikePrice || !quantity) return;
 
-    const strike = parseFloat(strikePrice);
-    const qty = parseInt(quantity);
-
-    // Validate inputs
-    if (strike <= 0) {
-      notifyError('Strike price must be greater than 0');
+    // Validate form
+    const isValid = await validateForm();
+    if (!isValid) {
+      notifyError('Please fix the validation errors');
       return;
     }
 
-    if (qty <= 0) {
-      notifyError('Quantity must be greater than 0');
-      return;
-    }
-
-    if (qty > 1000) {
-      notifyError('Maximum quantity is 1000');
-      return;
-    }
+    const strike = sanitizeNumber(strikePrice)!;
+    const qty = sanitizeNumber(quantity)!;
     const expirySeconds = Math.floor(Date.now() / 1000) + parseInt(expiryDays) * 24 * 60 * 60;
+
+    // Final validation with complete data
+    const optionData = {
+      strikePrice: strike,
+      expirySeconds,
+      optionType,
+      quantity: qty,
+    };
+
+    const finalValidation = validateCreateOption(optionData);
+    if (!finalValidation.success) {
+      notifyError('Validation failed: ' + (finalValidation.errors?.[0] || 'Unknown error'));
+      return;
+    }
 
     // Show confirmation dialog
     setPendingTransaction({
@@ -164,9 +261,21 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
             type="number"
             placeholder="100"
             value={strikePrice}
-            onChange={(e) => setStrikePrice(e.target.value)}
-            className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50"
+            onChange={(e) => {
+              setStrikePrice(e.target.value);
+              // Clear validation error when user starts typing
+              if (validationErrors.strikePrice) {
+                setValidationErrors((prev) => ({ ...prev, strikePrice: '' }));
+              }
+            }}
+            onBlur={(e) => validateField('strikePrice', e.target.value)}
+            className={`bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50 ${
+              validationErrors.strikePrice ? 'border-red-500 focus:border-red-500' : ''
+            }`}
           />
+          {validationErrors.strikePrice && (
+            <p className="text-xs text-red-400 mt-1">{validationErrors.strikePrice}</p>
+          )}
         </div>
 
         {/* Quantity */}
@@ -176,9 +285,21 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
             type="number"
             placeholder="1"
             value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50"
+            onChange={(e) => {
+              setQuantity(e.target.value);
+              // Clear validation error when user starts typing
+              if (validationErrors.quantity) {
+                setValidationErrors((prev) => ({ ...prev, quantity: '' }));
+              }
+            }}
+            onBlur={(e) => validateField('quantity', e.target.value)}
+            className={`bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50 ${
+              validationErrors.quantity ? 'border-red-500 focus:border-red-500' : ''
+            }`}
           />
+          {validationErrors.quantity && (
+            <p className="text-xs text-red-400 mt-1">{validationErrors.quantity}</p>
+          )}
         </div>
 
         {/* Expiry */}
@@ -203,9 +324,15 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
           size="sm"
           variant="outline"
           onClick={handleSubmit}
-          disabled={isLoading || !strikePrice || !quantity}
+          disabled={
+            isLoading ||
+            !strikePrice ||
+            !quantity ||
+            Object.keys(validationErrors).length > 0 ||
+            isValidating
+          }
         >
-          {isLoading ? 'Creating...' : 'Create Option'}
+          {isValidating ? 'Validating...' : isLoading ? 'Creating...' : 'Create Option'}
         </Button>
       </div>
 
