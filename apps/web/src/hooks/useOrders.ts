@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
 import { OptionType, APEX_CONTRACT_CONFIG } from '@/lib/shared-types';
+import { useOrderNotifications } from '@/hooks/useNotifications';
 
 // Initialize Aptos client
 const aptosConfig = new AptosConfig({
@@ -36,6 +37,11 @@ export function useOrders(pollInterval = 15000) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const { notifyOrderFilled, notifyOrderPartial, notifyOrderCancelled, notifyOrderExpired } =
+    useOrderNotifications();
+
+  // Track previous orders for status change detection
+  const [previousOrders, setPreviousOrders] = useState<Order[]>([]);
 
   // Mock orders data for demonstration
   const mockOrders: Order[] = useMemo(
@@ -273,6 +279,63 @@ export function useOrders(pollInterval = 15000) {
     failed: getOrdersByStatus('failed').length,
     recentActivity: orders.slice(0, 5), // Last 5 orders
   };
+
+  // Monitor order status changes and send notifications
+  useEffect(() => {
+    if (previousOrders.length === 0) {
+      setPreviousOrders(orders);
+      return;
+    }
+
+    orders.forEach((currentOrder) => {
+      const previousOrder = previousOrders.find((o) => o.id === currentOrder.id);
+
+      if (!previousOrder) {
+        // New order - could notify about order creation
+        return;
+      }
+
+      // Check for status changes
+      if (previousOrder.status !== currentOrder.status) {
+        const symbol = `APT/USD`; // Could be extracted from order details
+
+        switch (currentOrder.status) {
+          case 'confirmed':
+            if (currentOrder.type === 'create_option') {
+              notifyOrderFilled(
+                currentOrder.id,
+                symbol,
+                currentOrder.details.quantity || 1,
+                currentOrder.details.settlementPrice || currentOrder.details.strikePrice || 0,
+              );
+            }
+            break;
+
+          case 'failed':
+            if (currentOrder.type === 'cancel_option') {
+              notifyOrderCancelled(currentOrder.id, symbol, currentOrder.errorMessage);
+            }
+            break;
+        }
+
+        // Check for expired orders (simulated logic)
+        const orderAge = Date.now() - currentOrder.timestamp;
+        const oneHour = 60 * 60 * 1000;
+        if (orderAge > oneHour && currentOrder.status === 'pending') {
+          notifyOrderExpired(currentOrder.id, symbol);
+        }
+      }
+    });
+
+    setPreviousOrders(orders);
+  }, [
+    orders,
+    previousOrders,
+    notifyOrderFilled,
+    notifyOrderPartial,
+    notifyOrderCancelled,
+    notifyOrderExpired,
+  ]);
 
   return {
     orders,

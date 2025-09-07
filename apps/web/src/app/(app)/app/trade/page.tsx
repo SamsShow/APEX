@@ -12,6 +12,9 @@ import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { usePositions } from '@/hooks/usePositions';
 import { useOrders } from '@/hooks/useOrders';
 import { useOrderBookWebSocket } from '@/hooks/useWebSocket';
+import { usePriceAlerts } from '@/hooks/useNotifications';
+import { usePriceFeeds } from '@/hooks/usePriceFeeds';
+import { PriceAlerts } from '@/components/trade/price-alerts';
 import { Button } from '@/components/ui/button';
 import {
   BarChart3,
@@ -27,6 +30,8 @@ import {
 export default function TradePage() {
   const { refreshPositions } = usePositions();
   const { refreshOrders } = useOrders();
+  const { checkPriceAlerts } = usePriceAlerts();
+  const { currentPrice } = usePriceFeeds('APT/USD');
 
   // Mobile responsiveness state
   const [isMobile, setIsMobile] = useState(false);
@@ -59,6 +64,13 @@ export default function TradePage() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Price alert monitoring
+  React.useEffect(() => {
+    if (currentPrice && currentPrice > 0) {
+      checkPriceAlerts(currentPrice, 'APT/USD');
+    }
+  }, [currentPrice, checkPriceAlerts]);
 
   // Mobile navigation tabs
   const mobileTabs = [
@@ -193,7 +205,7 @@ export default function TradePage() {
             </div>
           </div>
         </section>
-        <section className="2xl:col-span-12 rounded-xl border border-white/10 bg-card/60 p-4 md:p-5 shadow-glow">
+        <section className="2xl:col-span-8 rounded-xl border border-white/10 bg-card/60 p-4 md:p-5 shadow-glow">
           <h2 className="mb-2 text-sm font-semibold text-zinc-200">Strategy Builder</h2>
           <ErrorBoundary
             fallback={
@@ -201,6 +213,14 @@ export default function TradePage() {
             }
           >
             <StrategyBuilder />
+          </ErrorBoundary>
+        </section>
+        <section className="2xl:col-span-4 rounded-xl border border-white/10 bg-card/60 p-4 md:p-5 shadow-glow">
+          <h2 className="mb-2 text-sm font-semibold text-zinc-200">Price Alerts</h2>
+          <ErrorBoundary
+            fallback={<div className="p-4 text-center text-red-400">Price alerts unavailable</div>}
+          >
+            <PriceAlerts symbol="APT/USD" />
           </ErrorBoundary>
         </section>
       </div>
@@ -255,25 +275,38 @@ export default function TradePage() {
 
         {/* Mobile Strategy Builder - Collapsible */}
         {showMobileMenu && (
-          <div className="mt-4 rounded-xl border border-white/10 bg-card/60 p-4 shadow-glow">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-zinc-200">Strategy Builder</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowMobileMenu(false)}
-                className="text-zinc-400 hover:text-zinc-200"
+          <div className="mt-4 space-y-4">
+            <div className="rounded-xl border border-white/10 bg-card/60 p-4 shadow-glow">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold text-zinc-200">Strategy Builder</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowMobileMenu(false)}
+                  className="text-zinc-400 hover:text-zinc-200"
+                >
+                  <ChevronUp className="w-4 h-4" />
+                </Button>
+              </div>
+              <ErrorBoundary
+                fallback={
+                  <div className="p-4 text-center text-red-400">Strategy builder unavailable</div>
+                }
               >
-                <ChevronUp className="w-4 h-4" />
-              </Button>
+                <StrategyBuilder />
+              </ErrorBoundary>
             </div>
-            <ErrorBoundary
-              fallback={
-                <div className="p-4 text-center text-red-400">Strategy builder unavailable</div>
-              }
-            >
-              <StrategyBuilder />
-            </ErrorBoundary>
+
+            <div className="rounded-xl border border-white/10 bg-card/60 p-4 shadow-glow">
+              <h2 className="text-sm font-semibold text-zinc-200 mb-3">Price Alerts</h2>
+              <ErrorBoundary
+                fallback={
+                  <div className="p-4 text-center text-red-400">Price alerts unavailable</div>
+                }
+              >
+                <PriceAlerts symbol="APT/USD" />
+              </ErrorBoundary>
+            </div>
           </div>
         )}
       </div>

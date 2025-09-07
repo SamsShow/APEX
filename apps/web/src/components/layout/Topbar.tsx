@@ -5,6 +5,7 @@ import { ConnectWalletButton } from '@/components/ui/ConnectWalletButton';
 import { Button } from '@/components/ui/button';
 import { Command } from 'lucide-react';
 import { MobileSidebar } from '@/components/layout/Sidebar';
+import { NotificationBell } from '@/components/ui/notification-bell';
 
 export function Topbar() {
   const [open, setOpen] = React.useState(false);
@@ -28,6 +29,7 @@ export function Topbar() {
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <NotificationBell />
         <Button
           variant="ghost"
           size="sm"
