@@ -27,7 +27,7 @@ export const Candles = React.memo<CandlesProps>(({ data }) => {
       if (!mounted || !ref.current) return;
       const chart = createChart(ref.current, {
         width: ref.current.clientWidth,
-        height: 320,
+        height: window.innerWidth < 768 ? 280 : 320,
         layout: {
           background: { type: ColorType.Solid, color: 'transparent' },
           textColor: '#e5e7eb',
@@ -67,11 +67,12 @@ export const Candles = React.memo<CandlesProps>(({ data }) => {
 
   React.useEffect(() => {
     if (chartRef.current) {
-      chartRef.current.resize(size.width, 320);
+      const height = window.innerWidth < 768 ? 280 : 320;
+      chartRef.current.resize(size.width, height);
     }
   }, [size.width]);
 
-  return <div ref={ref} className="h-[320px] w-full" />;
+  return <div ref={ref} className="h-[280px] md:h-[320px] w-full touch-pan-y" />;
 });
 
 // Display name for debugging

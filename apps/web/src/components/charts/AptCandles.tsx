@@ -28,7 +28,15 @@ export function AptCandles() {
     };
   }, []);
 
-  if (error) return <div className="text-xs text-red-400">{error}</div>;
-  if (!candles) return <Skeleton className="h-[320px] w-full" />;
-  return <Candles data={candles} />;
+  if (error)
+    return <div className="text-sm md:text-xs text-red-400 p-4 text-center">📊 {error}</div>;
+  if (!candles) return <Skeleton className="h-[280px] md:h-[320px] w-full rounded-lg" />;
+  return (
+    <div className="relative">
+      <Candles data={candles} />
+      <div className="absolute top-2 right-2 text-xs text-zinc-400 bg-zinc-900/80 px-2 py-1 rounded">
+        📈 APT/USD
+      </div>
+    </div>
+  );
 }

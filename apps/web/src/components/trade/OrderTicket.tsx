@@ -237,7 +237,7 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
   }
 
   return (
-    <div className="flex h-[420px] flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-900/50 p-3">
+    <div className="flex h-[420px] md:h-[480px] flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-900/50 p-3 md:p-4">
       <div className="text-sm font-medium text-zinc-200">Create Option</div>
 
       {/* Connection Status */}
@@ -246,27 +246,29 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
         <span className="text-xs text-zinc-300">
           {connected ? 'Live Contract Calls' : 'Connect Wallet Required'}
         </span>
-        {connected && <span className="text-xs text-zinc-500 ml-auto">Aptos Testnet</span>}
+        {connected && (
+          <span className="text-xs text-zinc-500 ml-auto hidden sm:inline">Aptos Testnet</span>
+        )}
       </div>
 
-      <div className="flex flex-col gap-3 flex-1">
+      <div className="flex flex-col gap-4 flex-1">
         {/* Option Type */}
         <div>
-          <label className="text-xs text-zinc-400 mb-1 block">Type</label>
+          <label className="text-xs text-zinc-400 mb-2 block">Type</label>
           <Select value={optionType} onValueChange={(value: OptionType) => setOptionType(value)}>
-            <SelectTrigger className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50">
+            <SelectTrigger className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 h-12 md:h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="call">Call</SelectItem>
-              <SelectItem value="put">Put</SelectItem>
+              <SelectItem value="call">📈 Call Option</SelectItem>
+              <SelectItem value="put">📉 Put Option</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Strike Price */}
         <div>
-          <label className="text-xs text-zinc-400 mb-1 block">Strike Price</label>
+          <label className="text-xs text-zinc-400 mb-2 block">Strike Price ($)</label>
           <Input
             type="number"
             placeholder="100"
@@ -279,9 +281,10 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
               }
             }}
             onBlur={(e) => debouncedValidateField('strikePrice', e.target.value)}
-            className={`bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50 ${
+            className={`bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50 h-12 md:h-10 text-base md:text-sm ${
               validationErrors.strikePrice ? 'border-red-500 focus:border-red-500' : ''
             }`}
+            inputMode="decimal"
           />
           {validationErrors.strikePrice && (
             <p className="text-xs text-red-400 mt-1">{validationErrors.strikePrice}</p>
@@ -290,7 +293,7 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
 
         {/* Quantity */}
         <div>
-          <label className="text-xs text-zinc-400 mb-1 block">Quantity</label>
+          <label className="text-xs text-zinc-400 mb-2 block">Quantity</label>
           <Input
             type="number"
             placeholder="1"
@@ -303,9 +306,10 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
               }
             }}
             onBlur={(e) => debouncedValidateField('quantity', e.target.value)}
-            className={`bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50 ${
+            className={`bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50 h-12 md:h-10 text-base md:text-sm ${
               validationErrors.quantity ? 'border-red-500 focus:border-red-500' : ''
             }`}
+            inputMode="numeric"
           />
           {validationErrors.quantity && (
             <p className="text-xs text-red-400 mt-1">{validationErrors.quantity}</p>
@@ -314,22 +318,22 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
 
         {/* Expiry */}
         <div>
-          <label className="text-xs text-zinc-400 mb-1 block">Expiry (days)</label>
+          <label className="text-xs text-zinc-400 mb-2 block">Expiry</label>
           <Select value={expiryDays} onValueChange={setExpiryDays}>
-            <SelectTrigger className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50">
+            <SelectTrigger className="bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 h-12 md:h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="7">1 Week</SelectItem>
-              <SelectItem value="30">1 Month</SelectItem>
-              <SelectItem value="90">3 Months</SelectItem>
-              <SelectItem value="180">6 Months</SelectItem>
+              <SelectItem value="7">📅 1 Week</SelectItem>
+              <SelectItem value="30">📅 1 Month</SelectItem>
+              <SelectItem value="90">📅 3 Months</SelectItem>
+              <SelectItem value="180">📅 6 Months</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex items-center justify-end gap-2 mt-2">
         <Button
           size="sm"
           variant="outline"
@@ -341,8 +345,9 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
             Object.keys(validationErrors).length > 0 ||
             isValidating
           }
+          className="h-12 md:h-10 px-6 md:px-4 text-base md:text-sm font-medium min-w-[140px] md:min-w-[120px]"
         >
-          {isValidating ? 'Validating...' : isLoading ? 'Creating...' : 'Create Option'}
+          {isValidating ? '🔄 Validating...' : isLoading ? '⚡ Creating...' : '🚀 Create Option'}
         </Button>
       </div>
 
