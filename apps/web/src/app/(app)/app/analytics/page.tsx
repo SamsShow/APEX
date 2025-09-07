@@ -5,10 +5,13 @@ import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Brain, BarChart3, AlertTriangle, TrendingUp } from 'lucide-react';
-import { AnalyticsDashboard } from '@/components/analytics/AnalyticsDashboard';
-import { SentimentAnalysisDashboard } from '@/components/ai/SentimentAnalysisDashboard';
-import { AIRiskAssessmentDashboard } from '@/components/ai/AIRiskAssessmentDashboard';
-import { AnomalyDetectionDashboard } from '@/components/ai/AnomalyDetectionDashboard';
+import {
+  LazyAnalyticsDashboard,
+  LazySentimentAnalysisDashboard,
+  LazyAIRiskAssessmentDashboard,
+  LazyAnomalyDetectionDashboard,
+  LoadingFallback,
+} from '@/lib/lazyComponents';
 
 export default function AnalyticsPage() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -54,23 +57,33 @@ export default function AnalyticsPage() {
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
-          <AnalyticsDashboard />
+          <React.Suspense fallback={<LoadingFallback />}>
+            <LazyAnalyticsDashboard />
+          </React.Suspense>
         </TabsContent>
 
         <TabsContent value="sentiment" className="mt-6">
-          <SentimentAnalysisDashboard />
+          <React.Suspense fallback={<LoadingFallback />}>
+            <LazySentimentAnalysisDashboard />
+          </React.Suspense>
         </TabsContent>
 
         <TabsContent value="risk" className="mt-6">
-          <AIRiskAssessmentDashboard />
+          <React.Suspense fallback={<LoadingFallback />}>
+            <LazyAIRiskAssessmentDashboard />
+          </React.Suspense>
         </TabsContent>
 
         <TabsContent value="anomalies" className="mt-6">
-          <AnomalyDetectionDashboard />
+          <React.Suspense fallback={<LoadingFallback />}>
+            <LazyAnomalyDetectionDashboard />
+          </React.Suspense>
         </TabsContent>
 
         <TabsContent value="performance" className="mt-6">
-          <AnalyticsDashboard />
+          <React.Suspense fallback={<LoadingFallback />}>
+            <LazyAnalyticsDashboard />
+          </React.Suspense>
         </TabsContent>
       </Tabs>
     </div>

@@ -13,6 +13,7 @@ import {
 import { TransactionDialog } from '@/components/ui/transaction-dialog';
 import { useOptionsContract } from '@/hooks/useOptionsContract';
 import { useNotifications } from '@/hooks/useNotifications';
+import { usePerformanceMonitor, useDebounce } from '@/hooks/usePerformance';
 import { OptionType, APEX_CONTRACT_CONFIG } from '@/lib/shared-types';
 import {
   validateStrikePrice,
@@ -27,11 +28,14 @@ interface OrderTicketProps {
   onOrderUpdate?: () => void;
 }
 
-export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProps = {}) {
-  const refreshData = () => {
+export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onOrderUpdate }) => {
+  // Performance monitoring
+  usePerformanceMonitor('OrderTicket', process.env.NODE_ENV === 'development');
+
+  const refreshData = React.useCallback(() => {
     if (onPositionUpdate) onPositionUpdate();
     if (onOrderUpdate) onOrderUpdate();
-  };
+  }, [onPositionUpdate, onOrderUpdate]);
 
   const { createOption, isLoading, connected } = useOptionsContract(refreshData);
   const { notifySuccess, notifyError } = useNotifications();
@@ -54,8 +58,8 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
     expirySeconds: number;
   } | null>(null);
 
-  // Validation functions
-  const validateForm = async () => {
+  // Validation functions with debouncing
+  const validateForm = React.useCallback(async () => {
     setIsValidating(true);
     const errors: Record<string, string> = {};
 
@@ -96,44 +100,50 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
     setValidationErrors(errors);
     setIsValidating(false);
     return Object.keys(errors).length === 0;
-  };
+  }, [strikePrice, quantity, expiryDays]);
 
-  // Validate individual fields on blur
-  const validateField = (fieldName: string, value: string) => {
-    const errors = { ...validationErrors };
+  // Validate individual fields on blur with debouncing
+  const validateField = React.useCallback(
+    (fieldName: string, value: string) => {
+      const errors = { ...validationErrors };
 
-    switch (fieldName) {
-      case 'strikePrice':
-        const sanitizedStrike = sanitizeNumber(value);
-        if (sanitizedStrike === null) {
-          errors.strikePrice = 'Strike price must be a valid number';
-        } else {
-          const strikeValidation = validateStrikePrice(sanitizedStrike);
-          if (!strikeValidation.success) {
-            errors.strikePrice = strikeValidation.errors?.[0] || 'Invalid strike price';
+      switch (fieldName) {
+        case 'strikePrice':
+          const sanitizedStrike = sanitizeNumber(value);
+          if (sanitizedStrike === null) {
+            errors.strikePrice = 'Strike price must be a valid number';
           } else {
-            delete errors.strikePrice;
+            const strikeValidation = validateStrikePrice(sanitizedStrike);
+            if (!strikeValidation.success) {
+              errors.strikePrice = strikeValidation.errors?.[0] || 'Invalid strike price';
+            } else {
+              delete errors.strikePrice;
+            }
           }
-        }
-        break;
+          break;
 
-      case 'quantity':
-        const sanitizedQuantity = sanitizeNumber(value);
-        if (sanitizedQuantity === null) {
-          errors.quantity = 'Quantity must be a valid number';
-        } else {
-          const quantityValidation = validateQuantity(sanitizedQuantity);
-          if (!quantityValidation.success) {
-            errors.quantity = quantityValidation.errors?.[0] || 'Invalid quantity';
+        case 'quantity':
+          const sanitizedQuantity = sanitizeNumber(value);
+          if (sanitizedQuantity === null) {
+            errors.quantity = 'Quantity must be a valid number';
           } else {
-            delete errors.quantity;
+            const quantityValidation = validateQuantity(sanitizedQuantity);
+            if (!quantityValidation.success) {
+              errors.quantity = quantityValidation.errors?.[0] || 'Invalid quantity';
+            } else {
+              delete errors.quantity;
+            }
           }
-        }
-        break;
-    }
+          break;
+      }
 
-    setValidationErrors(errors);
-  };
+      setValidationErrors(errors);
+    },
+    [validationErrors],
+  );
+
+  // Debounced validation for better performance
+  const debouncedValidateField = useDebounce(validateField, 300);
 
   const handleSubmit = async () => {
     if (!strikePrice || !quantity) return;
@@ -268,7 +278,7 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
                 setValidationErrors((prev) => ({ ...prev, strikePrice: '' }));
               }
             }}
-            onBlur={(e) => validateField('strikePrice', e.target.value)}
+            onBlur={(e) => debouncedValidateField('strikePrice', e.target.value)}
             className={`bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50 ${
               validationErrors.strikePrice ? 'border-red-500 focus:border-red-500' : ''
             }`}
@@ -292,7 +302,7 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
                 setValidationErrors((prev) => ({ ...prev, quantity: '' }));
               }
             }}
-            onBlur={(e) => validateField('quantity', e.target.value)}
+            onBlur={(e) => debouncedValidateField('quantity', e.target.value)}
             className={`bg-zinc-900/50 border-zinc-700 hover:bg-zinc-800/50 focus:bg-zinc-800/50 ${
               validationErrors.quantity ? 'border-red-500 focus:border-red-500' : ''
             }`}
@@ -362,4 +372,7 @@ export function OrderTicket({ onPositionUpdate, onOrderUpdate }: OrderTicketProp
       )}
     </div>
   );
-}
+});
+
+// Display name for debugging
+OrderTicket.displayName = 'OrderTicket';

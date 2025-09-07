@@ -9,7 +9,7 @@ interface OrderBookEntry {
   side: 'bid' | 'ask';
 }
 
-export function OrderBook() {
+export const OrderBook = React.memo(() => {
   const { orderBook, connectionStatus } = useOrderBookWebSocket('APT/USD');
 
   // Combine bids and asks into a single array for display
@@ -28,7 +28,7 @@ export function OrderBook() {
 
     // Show top 10 bids and top 10 asks
     return [...bids.slice(0, 10), ...asks.slice(0, 10)];
-  }, [orderBook]);
+  }, [orderBook.bids, orderBook.asks]);
 
   return (
     <div className="h-64 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/50">
@@ -96,4 +96,7 @@ export function OrderBook() {
       </div>
     </div>
   );
-}
+});
+
+// Display name for debugging
+OrderBook.displayName = 'OrderBook';

@@ -6,7 +6,11 @@ import { useResizeObserver } from './hooks';
 
 export type Candle = { time: number; open: number; high: number; low: number; close: number };
 
-export function Candles({ data }: { data: Candle[] }) {
+interface CandlesProps {
+  data: Candle[];
+}
+
+export const Candles = React.memo<CandlesProps>(({ data }) => {
   const { ref, size } = useResizeObserver<HTMLDivElement>();
   type ChartCandlesApi = {
     addCandlestickSeries: (opts?: Record<string, unknown>) => { setData: (d: Candle[]) => void };
@@ -68,4 +72,7 @@ export function Candles({ data }: { data: Candle[] }) {
   }, [size.width]);
 
   return <div ref={ref} className="h-[320px] w-full" />;
-}
+});
+
+// Display name for debugging
+Candles.displayName = 'Candles';
