@@ -4,6 +4,7 @@ import './globals.css';
 import '@fontsource/jersey-25';
 import { WalletProvider } from '@/components/providers/WalletProvider';
 import { NotificationProvider } from '@/hooks/useNotifications';
+import { ThemeProvider } from '@/hooks/useTheme';
 import { NotificationContainer } from '@/components/ui/notification-container';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
@@ -46,12 +47,14 @@ export default function RootLayout({
             console.error('Global Error Boundary:', error, errorInfo);
           }}
         >
-          <WalletProvider>
-            <NotificationProvider>
-              {children}
-              <NotificationContainer />
-            </NotificationProvider>
-          </WalletProvider>
+          <ThemeProvider defaultTheme="system" storageKey="apex-theme">
+            <WalletProvider>
+              <NotificationProvider>
+                {children}
+                <NotificationContainer />
+              </NotificationProvider>
+            </WalletProvider>
+          </ThemeProvider>
         </ErrorBoundary>
       </body>
     </html>

@@ -21,7 +21,7 @@ interface PriceAlertsProps {
 }
 
 export const PriceAlerts: React.FC<PriceAlertsProps> = ({ symbol = 'APT/USD', className }) => {
-  const { priceAlerts, createPriceAlert, deletePriceAlert, getActiveAlerts, getTriggeredAlerts } =
+  const { createPriceAlert, deletePriceAlert, getActiveAlerts, getTriggeredAlerts } =
     usePriceAlerts();
 
   const { currentPrice } = usePriceFeeds(symbol);
@@ -110,7 +110,7 @@ export const PriceAlerts: React.FC<PriceAlertsProps> = ({ symbol = 'APT/USD', cl
 
               <div>
                 <label className="text-xs text-zinc-400 mb-1 block">Condition</label>
-                <Select value={condition} onValueChange={(value: any) => setCondition(value)}>
+                <Select value={condition} onValueChange={(value: 'above' | 'below' | 'crosses_above' | 'crosses_below') => setCondition(value)}>
                   <SelectTrigger className="bg-zinc-900/50 border-zinc-700 h-10">
                     <SelectValue />
                   </SelectTrigger>
@@ -120,70 +120,54 @@ export const PriceAlerts: React.FC<PriceAlertsProps> = ({ symbol = 'APT/USD', cl
                     <SelectItem value="crosses_above">Crosses Above</SelectItem>
                     <SelectItem value="crosses_below">Crosses Below</SelectItem>
                   </SelectContent>
-                </Select>
-              </div>
-            </div>
+            </Select>
+          </div>
+        </div>
+      ) : (
+        <Button onClick={() => setIsCreating(true)} className="w-full" variant="outline">
+          <Plus className="w-4 h-4 mr-2" />
+          Add Price Alert
+        </Button>
+      )}
 
-            <div className="flex gap-2">
-              <Button
-                onClick={handleCreateAlert}
-                disabled={!targetPrice || parseFloat(targetPrice) <= 0}
-                className="flex-1"
+      {/* Active Alerts */}
+      {activeAlerts.length > 0 && (
+        <div className="space-y-2">
+          <h4 className="text-sm font-medium text-zinc-200">Active Alerts</h4>
+          <div className="space-y-2">
+            {activeAlerts.map((alert) => (
+              <div
+                key={alert.id}
+                className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700"
               >
-                Create Alert
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsCreating(false);
-                  setTargetPrice('');
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
+                <div className="flex items-center gap-3">
+                  {getConditionIcon(alert.condition)}
+                  <div>
+                    <div className="text-sm font-medium text-zinc-200">
+                      ${alert.targetPrice.toFixed(2)}
+                    </div>
+                    <div className="text-xs text-zinc-400">
+                      {formatCondition(alert.condition)}
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => deletePriceAlert(alert.id)}
+                  className="text-zinc-400 hover:text-red-400"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
           </div>
         ) : (
           <Button onClick={() => setIsCreating(true)} className="w-full" variant="outline">
             <Plus className="w-4 h-4 mr-2" />
             Add Price Alert
           </Button>
-        )}
-
-        {/* Active Alerts */}
-        {activeAlerts.length > 0 && (
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium text-zinc-200">Active Alerts</h4>
-            <div className="space-y-2">
-              {activeAlerts.map((alert) => (
-                <div
-                  key={alert.id}
-                  className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700"
-                >
-                  <div className="flex items-center gap-3">
-                    {getConditionIcon(alert.condition)}
-                    <div>
-                      <div className="text-sm font-medium text-zinc-200">
-                        ${alert.targetPrice.toFixed(2)}
-                      </div>
-                      <div className="text-xs text-zinc-400">
-                        {formatCondition(alert.condition)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deletePriceAlert(alert.id)}
-                    className="text-zinc-400 hover:text-red-400"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
         )}
 
         {/* Triggered Alerts */}

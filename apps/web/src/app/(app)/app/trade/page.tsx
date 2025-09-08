@@ -9,22 +9,28 @@ import { Depth } from '@/components/charts/Depth';
 import { Tape } from '@/components/trade/Tape';
 import { HeatmapBook } from '@/components/trade/HeatmapBook';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
+import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { usePositions } from '@/hooks/usePositions';
 import { useOrders } from '@/hooks/useOrders';
 import { useOrderBookWebSocket } from '@/hooks/useWebSocket';
 import { usePriceAlerts } from '@/hooks/useNotifications';
 import { usePriceFeeds } from '@/hooks/usePriceFeeds';
+import {
+  useKeyboardShortcuts,
+  createTradingPageShortcuts,
+  createGlobalShortcuts,
+} from '@/hooks/useKeyboardShortcuts';
+import { useTheme } from '@/hooks/useTheme';
 import { PriceAlerts } from '@/components/trade/price-alerts';
 import { Button } from '@/components/ui/button';
 import {
   BarChart3,
   BookOpen,
   Receipt,
-  Settings,
   ChevronUp,
   ChevronDown,
-  Smartphone,
   Monitor,
+  HelpCircle,
 } from 'lucide-react';
 
 export default function TradePage() {
@@ -32,13 +38,16 @@ export default function TradePage() {
   const { refreshOrders } = useOrders();
   const { checkPriceAlerts } = usePriceAlerts();
   const { currentPrice } = usePriceFeeds('APT/USD');
+  const { toggleTheme } = useTheme();
 
   // Mobile responsiveness state
-  const [isMobile, setIsMobile] = useState(false);
   const [activeMobileTab, setActiveMobileTab] = useState<'chart' | 'orderbook' | 'ticket' | 'tape'>(
     'chart',
   );
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Keyboard shortcuts help state
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
 
   // WebSocket connections for real-time data
   const { orderBook } = useOrderBookWebSocket('APT/USD');
@@ -54,23 +63,59 @@ export default function TradePage() {
     y: quantity,
   }));
 
-  // Detect mobile screen size
-  React.useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024); // lg breakpoint
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   // Price alert monitoring
   React.useEffect(() => {
     if (currentPrice && currentPrice > 0) {
       checkPriceAlerts(currentPrice, 'APT/USD');
     }
   }, [currentPrice, checkPriceAlerts]);
+
+  // Keyboard shortcuts setup
+  const refreshData = React.useCallback(() => {
+    refreshPositions();
+    refreshOrders();
+    checkPriceAlerts(currentPrice || 0, 'APT/USD');
+  }, [refreshPositions, refreshOrders, checkPriceAlerts, currentPrice]);
+
+  const tradingPageShortcutActions = React.useMemo(
+    () => ({
+      refreshData,
+      toggleMobileMenu: () => setShowMobileMenu(!showMobileMenu),
+      switchToChart: () => setActiveMobileTab('chart'),
+      switchToOrderbook: () => setActiveMobileTab('orderbook'),
+      switchToTicket: () => setActiveMobileTab('ticket'),
+      switchToTape: () => setActiveMobileTab('tape'),
+    }),
+    [refreshData, showMobileMenu],
+  );
+
+  const globalShortcutActions = React.useMemo(
+    () => ({
+      toggleTheme: () => toggleTheme(),
+      openHelp: () => setShowShortcutsHelp(true),
+      focusSearch: () => {
+        // TODO: Implement search focus
+        console.log('Search focus not yet implemented');
+      },
+    }),
+    [toggleTheme],
+  );
+
+  const tradingPageShortcuts = React.useMemo(
+    () => createTradingPageShortcuts(tradingPageShortcutActions),
+    [tradingPageShortcutActions],
+  );
+
+  const globalShortcuts = React.useMemo(
+    () => createGlobalShortcuts(globalShortcutActions),
+    [globalShortcutActions],
+  );
+
+  // Setup keyboard shortcuts
+  useKeyboardShortcuts({
+    shortcuts: [...tradingPageShortcuts, ...globalShortcuts],
+    enabled: true,
+  });
 
   // Mobile navigation tabs
   const mobileTabs = [
@@ -231,19 +276,30 @@ export default function TradePage() {
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-lg font-semibold text-zinc-200">Trading</h1>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="border-zinc-700"
-            >
-              {showMobileMenu ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-              Menu
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowShortcutsHelp(true)}
+                className="text-zinc-400 hover:text-zinc-200 h-8 w-8 p-0"
+                title="Keyboard shortcuts help"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className="border-zinc-700"
+              >
+                {showMobileMenu ? (
+                  <ChevronUp className="w-4 h-4" />
+                ) : (
+                  <ChevronDown className="w-4 h-4" />
+                )}
+                Menu
+              </Button>
+            </div>
           </div>
 
           {/* Mobile Tabs */}
@@ -310,6 +366,14 @@ export default function TradePage() {
           </div>
         )}
       </div>
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsHelp
+        isOpen={showShortcutsHelp}
+        onClose={() => setShowShortcutsHelp(false)}
+        shortcuts={[...tradingPageShortcuts, ...globalShortcuts]}
+        title="Trading Page Shortcuts"
+      />
     </>
   );
 }

@@ -37,7 +37,7 @@ export interface Notification {
   status: NotificationStatus;
   title: string;
   message: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   timestamp: Date;
   readAt?: Date;
   archivedAt?: Date;
@@ -48,7 +48,7 @@ export interface Notification {
 export interface NotificationAction {
   label: string;
   action: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 // Price Alert Interface
@@ -424,7 +424,8 @@ export class NotificationManager {
   private playNotificationSound(priority: NotificationPriority): void {
     // Create audio context and play appropriate sound
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext = new (window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 

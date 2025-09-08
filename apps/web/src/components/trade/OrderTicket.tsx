@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { HelpCircle } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -11,16 +12,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { TransactionDialog } from '@/components/ui/transaction-dialog';
+import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { useOptionsContract } from '@/hooks/useOptionsContract';
 import { useNotifications } from '@/hooks/useNotifications';
 import { usePerformanceMonitor, useDebounce } from '@/hooks/usePerformance';
+import { useKeyboardShortcuts, createOrderTicketShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { OptionType, APEX_CONTRACT_CONFIG } from '@/lib/shared-types';
 import {
   validateStrikePrice,
   validateQuantity,
   validateCreateOption,
   sanitizeNumber,
-  sanitizeString,
 } from '@/lib/validation';
 
 interface OrderTicketProps {
@@ -57,6 +59,9 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
     type: OptionType;
     expirySeconds: number;
   } | null>(null);
+
+  // Keyboard shortcuts help state
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
 
   // Validation functions with debouncing
   const validateForm = React.useCallback(async () => {
@@ -108,7 +113,7 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
       const errors = { ...validationErrors };
 
       switch (fieldName) {
-        case 'strikePrice':
+        case 'strikePrice': {
           const sanitizedStrike = sanitizeNumber(value);
           if (sanitizedStrike === null) {
             errors.strikePrice = 'Strike price must be a valid number';
@@ -121,8 +126,9 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
             }
           }
           break;
+        }
 
-        case 'quantity':
+        case 'quantity': {
           const sanitizedQuantity = sanitizeNumber(value);
           if (sanitizedQuantity === null) {
             errors.quantity = 'Quantity must be a valid number';
@@ -135,6 +141,7 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
             }
           }
           break;
+        }
       }
 
       setValidationErrors(errors);
@@ -145,7 +152,7 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
   // Debounced validation for better performance
   const debouncedValidateField = useDebounce(validateField, 300);
 
-  const handleSubmit = async () => {
+  const handleSubmit = React.useCallback(async () => {
     if (!strikePrice || !quantity) return;
 
     // Validate form
@@ -181,7 +188,19 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
       expirySeconds,
     });
     setShowConfirmDialog(true);
-  };
+  }, [
+    quantity,
+    expiryDays,
+    optionType,
+    validateForm,
+    createOption,
+    notifySuccess,
+    notifyError,
+    setStrikePrice,
+    setQuantity,
+    setShowConfirmDialog,
+    setPendingTransaction,
+  ]);
 
   const handleConfirmTransaction = async () => {
     if (!pendingTransaction) return;
@@ -211,12 +230,56 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
       setShowConfirmDialog(false);
       setPendingTransaction(null);
     }
-  };
+  }, [
+    strikePrice,
+    quantity,
+    expiryDays,
+    optionType,
+    validateForm,
+    createOption,
+    notifySuccess,
+    notifyError,
+    setStrikePrice,
+    setQuantity,
+    setShowConfirmDialog,
+    setPendingTransaction,
+  ]);
 
   const handleCancelTransaction = () => {
     setShowConfirmDialog(false);
     setPendingTransaction(null);
   };
+
+  // Keyboard shortcuts actions
+  const keyboardShortcutActions = React.useMemo(
+    () => ({
+      submitOrder: handleSubmit,
+      clearForm: () => {
+        setStrikePrice('');
+        setQuantity('');
+        setValidationErrors({});
+        setPendingTransaction(null);
+        setShowConfirmDialog(false);
+      },
+      setCallOption: () => setOptionType('call'),
+      setPutOption: () => setOptionType('put'),
+      setQuantity: (qty: number) => setQuantity(qty.toString()),
+      setExpiry: (days: number) => setExpiryDays(days.toString()),
+    }),
+    [handleSubmit],
+  );
+
+  // Create keyboard shortcuts
+  const orderTicketShortcuts = React.useMemo(
+    () => createOrderTicketShortcuts(keyboardShortcutActions),
+    [keyboardShortcutActions],
+  );
+
+  // Setup keyboard shortcuts hook
+  useKeyboardShortcuts({
+    shortcuts: orderTicketShortcuts,
+    enabled: connected && !showConfirmDialog,
+  });
 
   if (!connected) {
     return (
@@ -238,7 +301,18 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
 
   return (
     <div className="flex h-[420px] md:h-[480px] flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-900/50 p-3 md:p-4">
-      <div className="text-sm font-medium text-zinc-200">Create Option</div>
+      <div className="flex items-center justify-between">
+        <div className="text-sm font-medium text-zinc-200">Create Option</div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowShortcutsHelp(true)}
+          className="text-zinc-400 hover:text-zinc-200 h-6 w-6 p-0"
+          title="Keyboard shortcuts help"
+        >
+          <HelpCircle className="w-4 h-4" />
+        </Button>
+      </div>
 
       {/* Connection Status */}
       <div className="flex items-center gap-2 p-2 rounded border border-zinc-700 bg-zinc-800/30">
@@ -375,6 +449,14 @@ export const OrderTicket = React.memo<OrderTicketProps>(({ onPositionUpdate, onO
           action="Create Option"
         />
       )}
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsHelp
+        isOpen={showShortcutsHelp}
+        onClose={() => setShowShortcutsHelp(false)}
+        shortcuts={orderTicketShortcuts}
+        title="Order Ticket Shortcuts"
+      />
     </div>
   );
 });

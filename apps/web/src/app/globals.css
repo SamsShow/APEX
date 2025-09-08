@@ -9,12 +9,72 @@
   --foreground: #e5e7eb;
 }
 
+/* Light theme variables */
+.light {
+  --background: #ffffff;
+  --foreground: #1f2937;
+  --muted: #f9fafb;
+  --muted-foreground: #6b7280;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f4f6;
+  --secondary-foreground: #1f2937;
+  --accent: #f3f4f6;
+  --accent-foreground: #1f2937;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --ring: #3b82f6;
+}
+
+/* Dark theme variables */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #e5e7eb;
+  --muted: #1f2937;
+  --muted-foreground: #9ca3af;
+  --popover: #1f2937;
+  --popover-foreground: #e5e7eb;
+  --card: #1f2937;
+  --card-foreground: #e5e7eb;
+  --border: #374151;
+  --input: #374151;
+  --primary: #60a5fa;
+  --primary-foreground: #1f2937;
+  --secondary: #374151;
+  --secondary-foreground: #e5e7eb;
+  --accent: #374151;
+  --accent-foreground: #e5e7eb;
+  --destructive: #f87171;
+  --destructive-foreground: #1f2937;
+  --ring: #60a5fa;
+}
+
 body {
   color: var(--foreground);
+  background: var(--background);
+}
+
+/* Dark theme specific background effects */
+.dark body {
   background:
     radial-gradient(800px 500px at 50% -10%, rgba(229, 231, 235, 0.12), transparent 60%),
     radial-gradient(600px 400px at 10% 20%, rgba(148, 163, 184, 0.1), transparent 60%),
-    radial-gradient(600px 400px at 90% 20%, rgba(148, 163, 184, 0.1), transparent 60%), #0a0a0a;
+    radial-gradient(600px 400px at 90% 20%, rgba(148, 163, 184, 0.1), transparent 60%),
+    var(--background);
+}
+
+/* Light theme specific background effects */
+.light body {
+  background:
+    radial-gradient(800px 500px at 50% -10%, rgba(0, 0, 0, 0.05), transparent 60%),
+    radial-gradient(600px 400px at 10% 20%, rgba(0, 0, 0, 0.03), transparent 60%),
+    radial-gradient(600px 400px at 90% 20%, rgba(0, 0, 0, 0.03), transparent 60%), var(--background);
 }
 
 @layer utilities {
